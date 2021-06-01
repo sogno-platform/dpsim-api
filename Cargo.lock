@@ -4,8 +4,9 @@ version = 3
 
 [[package]]
 name = "async-stream"
-version = "0.3.0"
-source = "git+https://github.com/SergioBenitez/async-stream.git?rev=c46ada9#c46ada948e0d4800393836f57eb2a3db516beb1e"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "171374e7e3b2504e0e5236e3b59260560f9fe94bfe9ac39ba5e4e929c5590625"
 dependencies = [
  "async-stream-impl",
  "futures-core",
@@ -13,8 +14,9 @@ dependencies = [
 
 [[package]]
 name = "async-stream-impl"
-version = "0.3.0"
-source = "git+https://github.com/SergioBenitez/async-stream.git?rev=c46ada9#c46ada948e0d4800393836f57eb2a3db516beb1e"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "648ed8c8d2ce5409ccd57453d9d1b214b342a0d69376a6feda1fd6cae3299308"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -78,9 +80,9 @@ checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
 name = "bumpalo"
-version = "3.6.1"
+version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63396b8a4b9de3f4fdfb320ab6080762242f66a8ef174c49d8e19b674db4cdbe"
+checksum = "9c59e7af012c713f529e7a3ee57ce9b31ddd858d4b512923602f74608b009631"
 
 [[package]]
 name = "bytes"
@@ -90,9 +92,9 @@ checksum = "b700ce4376041dcd0a327fd0097c41095743c4c8af8887265942faf1100bd040"
 
 [[package]]
 name = "cc"
-version = "1.0.67"
+version = "1.0.68"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3c69b077ad434294d3ce9f1f6143a2a4b89a8a2d54ef813d85003a4fd1137fd"
+checksum = "4a72c244c1ff497a746a7e1fb3d14bd08420ecda70c8f25c7112f2781652d787"
 
 [[package]]
 name = "cfg-if"
@@ -154,7 +156,7 @@ dependencies = [
 [[package]]
 name = "devise"
 version = "0.3.0"
-source = "git+https://github.com/SergioBenitez/Devise.git?rev=df00b5#df00b5162edd53e8d496e7935774e69b5f7f6bdf"
+source = "git+https://github.com/SergioBenitez/Devise.git?rev=f2431b#f2431bd122f55b03c3bc5b1c8d2267894d3c8142"
 dependencies = [
  "devise_codegen",
  "devise_core",
@@ -163,7 +165,7 @@ dependencies = [
 [[package]]
 name = "devise_codegen"
 version = "0.3.0"
-source = "git+https://github.com/SergioBenitez/Devise.git?rev=df00b5#df00b5162edd53e8d496e7935774e69b5f7f6bdf"
+source = "git+https://github.com/SergioBenitez/Devise.git?rev=f2431b#f2431bd122f55b03c3bc5b1c8d2267894d3c8142"
 dependencies = [
  "devise_core",
  "quote",
@@ -172,7 +174,7 @@ dependencies = [
 [[package]]
 name = "devise_core"
 version = "0.3.0"
-source = "git+https://github.com/SergioBenitez/Devise.git?rev=df00b5#df00b5162edd53e8d496e7935774e69b5f7f6bdf"
+source = "git+https://github.com/SergioBenitez/Devise.git?rev=f2431b#f2431bd122f55b03c3bc5b1c8d2267894d3c8142"
 dependencies = [
  "bitflags",
  "proc-macro2",
@@ -197,11 +199,11 @@ checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
 name = "dpsim-api"
 version = "0.1.0"
 dependencies = [
+ "bytes",
  "doc-comment",
  "log",
  "redis",
  "rocket",
- "rocket_contrib",
  "serde",
 ]
 
@@ -444,15 +446,15 @@ checksum = "f3a87b616e37e93c22fb19bcd386f02f3af5ea98a25670ad0fce773de23c5e68"
 
 [[package]]
 name = "httpdate"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05842d0d43232b23ccb7060ecb0f0626922c21f30012e97b767b30afd4a5d4b9"
+checksum = "6456b8a6c8f33fee7d958fcd1b60d55b11940a79e63ae87013e6d22e26034440"
 
 [[package]]
 name = "hyper"
-version = "0.14.7"
+version = "0.14.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e5f105c494081baa3bf9e200b279e27ec1623895cd504c7dbef8d0b080fcf54"
+checksum = "d3f71a7eea53a3f8257a7b4795373ff886397178cd634430ea94e12d7fe4fe34"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -523,9 +525,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.94"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18794a8ad5b29321f790b55d93dfba91e125cb1a9edbd4f8e3150acc771c1a5e"
+checksum = "789da6d93f1b866ffe175afc5322a4d76c038605a1c3319bb57b06967ca98a36"
 
 [[package]]
 name = "lock_api"
@@ -875,7 +877,7 @@ dependencies = [
 [[package]]
 name = "rocket"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#fa3e0334c1dcbbc91f63375906aaab72e5bafe59"
+source = "git+https://github.com/SergioBenitez/Rocket#3a3d0ce51850368880fa3565f9fc96f7b4dcf06b"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -898,10 +900,12 @@ dependencies = [
  "rocket_codegen",
  "rocket_http",
  "serde",
+ "serde_json",
  "state",
  "tempfile",
  "time",
  "tokio",
+ "tokio-stream",
  "tokio-util",
  "ubyte",
  "version_check",
@@ -911,32 +915,22 @@ dependencies = [
 [[package]]
 name = "rocket_codegen"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#fa3e0334c1dcbbc91f63375906aaab72e5bafe59"
+source = "git+https://github.com/SergioBenitez/Rocket#3a3d0ce51850368880fa3565f9fc96f7b4dcf06b"
 dependencies = [
  "devise",
  "glob",
  "indexmap",
+ "proc-macro2",
  "quote",
  "rocket_http",
+ "syn",
  "unicode-xid",
-]
-
-[[package]]
-name = "rocket_contrib"
-version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#fa3e0334c1dcbbc91f63375906aaab72e5bafe59"
-dependencies = [
- "log",
- "rocket",
- "serde",
- "serde_json",
- "tokio",
 ]
 
 [[package]]
 name = "rocket_http"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#fa3e0334c1dcbbc91f63375906aaab72e5bafe59"
+source = "git+https://github.com/SergioBenitez/Rocket#3a3d0ce51850368880fa3565f9fc96f7b4dcf06b"
 dependencies = [
  "cookie",
  "either",
@@ -1237,9 +1231,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.6.0"
+version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd3076b5c8cc18138b8f8814895c11eb4de37114a5d127bafdc5e55798ceef37"
+checksum = "0a38d31d7831c6ed7aad00aa4c12d9375fd225a6dd77da1d25b707346319a975"
 dependencies = [
  "autocfg",
  "bytes",
@@ -1263,6 +1257,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tokio-stream"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8864d706fdb3cc0843a49647ac892720dac98a6eeb818b77190592cf4994066"
+dependencies = [
+ "futures-core",
+ "pin-project-lite",
+ "tokio",
 ]
 
 [[package]]
@@ -1366,9 +1371,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-normalization"
-version = "0.1.17"
+version = "0.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07fbfce1c8a97d547e8b5334978438d9d6ec8c20e38f56d4a4374d181493eaef"
+checksum = "33717dca7ac877f497014e10d73f3acf948c342bee31b5ca7892faf94ccc6b49"
 dependencies = [
  "tinyvec",
 ]

@@ -22,9 +22,9 @@ extern crate redis;
 extern crate doc_comment;
 
 use std::path::PathBuf;
-use rocket::data::TempFile;
+use rocket::fs::TempFile;
 use rocket::form::Form;
-use rocket_contrib::json::Json;
+use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize};
 use redis::Commands;
 use log::info;
@@ -189,9 +189,12 @@ pub async fn incomplete_form(form: &rocket::Request<'_>) -> String {
 #[rocket::main]
 #[doc = "The main entry point for Rocket" ]
 async fn main() -> Result <(), rocket::Error> {
+
     rocket::build()
         .register("/", catchers![incomplete_form])
         .mount("/", routes![get_simulation, post_simulation])
         .launch()
         .await
 }
+
+#[cfg(test)] mod tests;
