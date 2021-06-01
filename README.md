@@ -13,6 +13,12 @@ cargo run
 
 This will compile and run the API Server.
 
+### Run the tests
+
+```bash
+cargo test
+```
+
 ### See it in action
 
 ```bash
