@@ -31,6 +31,9 @@ use redis::Commands;
 use log::info;
 use std::io::Read;
 use std::fs::File;
+use std::ffi::OsStr;
+use std::path::Path;
+use std::io::prelude::*;
 
 #[doc = "Utility function for writing an int value to a key in a Redis DB"]
 fn write_u64(key: &String, value: u64) -> redis::RedisResult<()> {
@@ -149,9 +152,6 @@ fn osstr_to_string(str: &OsStr) -> String {
     String::from(the_str)
 }
 
-use std::ffi::OsStr;
-use std::io::prelude::*;
-use std::path::Path;
 fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
     let mut zip = zip::ZipArchive::new(reader)?;
     let mut files = Vec::new();
