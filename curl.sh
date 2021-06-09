@@ -1,1 +1,1 @@
-curl -X POST -H 'Accept: application/json' -F "load_profile_data=@$HOME/example.zip" -F model_id=1 -F simulation_type="Powerflow" -F allowed_file_types=application/zip -w "\nHTTP CODE: %{http_code}\n" -i http://localhost:8000/simulation
+curl -X POST -H 'Accept: application/json' -F "load_profile_data=@testdata/load_profile_data.zip" -F model_id=1 -F simulation_type="Powerflow" -F allowed_file_types=application/zip -w "\nHTTP CODE: %{http_code}\n" -i http://localhost:8000/simulation
