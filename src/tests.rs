@@ -7,6 +7,8 @@ use rocket::http::ContentType;
 // byte array for the multipart test
 use std::fs;
 use bytes::BufMut;
+use serde_json::json;
+use assert_json_diff::assert_json_eq;
 
 #[launch]
 fn rocket() -> rocket::Rocket<Build> {
@@ -50,7 +52,7 @@ fn make_post_with_zip(zip_filename: &str, boundary: &[u8]) -> Vec<u8> {
     buf.put(boundary);
     buf.put(&b"\r\n"[..]);
     buf.put(&b"Content-Disposition: form-data; name=\"load_profile_data\"; filename=\"load_pd.zip\"\r\n"[..]);
-    buf.put(&b"Content-Type: application/json\r\n"[..]);
+    buf.put(&b"Content-Type: application/zip\r\n"[..]);
     buf.put(&b"\r\n"[..]);
     buf.put(&*zipdata);
     buf.put(&b"\r\n"[..]);
@@ -63,7 +65,6 @@ fn make_post_with_zip(zip_filename: &str, boundary: &[u8]) -> Vec<u8> {
 // multipart post code based on the example at https://github.com/SergioBenitez/Rocket/issues/1591
 #[test]
 fn test_post_simulation() {
-
     let client = Client::untracked(rocket()).expect("valid rocket instance");
 
     let ct = "multipart/form-data; boundary=X-BOUNDARY"
@@ -79,6 +80,22 @@ fn test_post_simulation() {
         .dispatch();
 
     let reply = response.into_string().unwrap();
-    let expected_json = "{\"simulation_id\":0,\"simulation_type\":\"Powerflow\",\"model_id\":1}";
-    assert_eq!(expected_json, reply)
+    let expected_simulation = json!(super::Simulation {
+        simulation_id:     0,
+        simulation_type:   "Powerflow".to_string(),
+        model_id:          1,
+        load_profile_data:
+            vec![
+                "Load_H_1.csv".to_string(),  "Load_H_10.csv".to_string(), "Load_H_11.csv".to_string(),
+                "Load_H_12.csv".to_string(), "Load_H_14.csv".to_string(), "Load_H_3.csv".to_string(),
+                "Load_H_4.csv".to_string(),  "Load_H_5.csv".to_string(),  "Load_H_6.csv".to_string(),
+                "Load_H_8.csv".to_string(),  "Load_I_1.csv".to_string(),  "Load_I_10.csv".to_string(),
+                "Load_I_12.csv".to_string(), "Load_I_13.csv".to_string(), "Load_I_14.csv".to_string(),
+                "Load_I_3.csv".to_string(),  "Load_I_7.csv".to_string(), "Load_I_9.csv".to_string(),
+                "README.MD".to_string()
+            ]
+    });
+    let mut received_json: super::Simulation = serde_json::from_str( reply.as_str() ).unwrap();
+    received_json.load_profile_data.sort();
+    assert_json_eq!(expected_simulation, received_json)
 }
