@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["error_simulation",""],["get_api","List the endpoints"],["get_root","Redirects to /api"],["get_routes",""],["get_simulation","List the simulations"],["incomplete_form",""],["post_simulation","Create a new simulation"]]});

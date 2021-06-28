@@ -1,6 +1,0 @@
-[global.limits]
-# The zip files for the load profile data
-# are about 14MiB, so that + spare
-# is: 32 * 1024 * 1024 (32MiB)
-data-form = 33554432
-file = 33554432
