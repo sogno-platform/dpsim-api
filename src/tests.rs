@@ -1,7 +1,7 @@
 use rocket::local::blocking::Client;
 use rocket::Build;
 use serde::{Deserialize, Serialize};
-use super::{post_simulation, get_simulation, incomplete_form};
+use crate::routes::{post_simulation, get_simulation, incomplete_form};
 use rocket::http::ContentType;
 // need this to read the file into the
 // byte array for the multipart test
@@ -24,8 +24,15 @@ fn test_get_simulation() {
 
     // Dispatch a request to 'GET /' and validate the response.
     let response = client.get("/simulation").dispatch();
+    assert_eq!(response.status().code, 200);
     let reply = response.into_string().unwrap();
-    assert_eq!(reply, "Could not write to redis DB: Connection refused (os error 111)");
+    let received_json: super::Simulation = serde_json::from_str( reply.as_str() ).unwrap();
+    assert_json_eq!(received_json, super::Simulation{
+                                simulation_id: 0,
+                                simulation_type: "Powerflow".to_string(),
+                                model_id: 36,
+                                load_profile_data: [].to_vec()
+                             })
 }
 
 #[derive(Serialize, Deserialize, Debug)]
