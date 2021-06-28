@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["dpsim_api"] = [{"text":"impl <a class=\"trait\" href=\"https://docs.rs/serde/1.0.126/serde/ser/trait.Serialize.html\" title=\"trait serde::ser::Serialize\">Serialize</a> for <a class=\"struct\" href=\"dpsim_api/struct.Simulation.html\" title=\"struct dpsim_api::Simulation\">Simulation</a>","synthetic":false,"types":["dpsim_api::Simulation"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
