@@ -13,11 +13,11 @@
 //! | /debug                      | GET    | DPsim-api debug    | [`todo!`]             | None               | plain text        |
 //!
 
+
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
 extern crate rocket;
-extern crate redis;
 #[macro_use]
 extern crate doc_comment;
 
@@ -27,26 +27,27 @@ use rocket::form::Form;
 use rocket::serde::json::Json;
 use rocket::http::Status;
 use serde::{Deserialize, Serialize};
-use redis::Commands;
-use log::info;
 use std::io::Read;
 use std::fs::File;
 use std::ffi::OsStr;
 use std::path::Path;
 use std::io::prelude::*;
-
-#[doc = "Utility function for writing an int value to a key in a Redis DB"]
-fn write_u64(key: &String, value: u64) -> redis::RedisResult<()> {
-    let client = redis::Client::open("redis://127.0.0.1/")?;
-    let mut conn = client.get_connection()?;
-    conn.set(key, value)
+mod routes;
+#[cfg(not(test))] mod amqp;
+#[cfg(test)] mod amqp {
+    use lapin::Result;
+    pub async fn publish() -> Result<()> {
+        Ok(())
+    }
 }
-
-#[doc = "Utility function for reading an int value from a key in a Redis DB"]
-fn read_u64(key: &String) -> redis::RedisResult<u64> {
-    let client = redis::Client::open("redis://127.0.0.1/")?;
-    let mut conn = client.get_connection()?;
-    conn.get(key)
+#[cfg(not(test))] mod db;
+#[cfg(test)] mod db {
+    pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
+        Ok(())
+    }
+    pub fn read_u64(_key: &String) -> redis::RedisResult<u64> {
+        Ok(36)
+    }
 }
 
 #[derive(Serialize, Deserialize, FromForm)]
@@ -58,70 +59,6 @@ pub struct Simulation {
 }
 
 pub type SimulationJson = Json<Simulation>;
-
-macro_rules! create_api_with_doc{
-    (
-        #[describe($description:tt)]
-        #[example($wget:tt)]
-        #[post($route_path:tt, format = $content_type:tt, data = "<form>")]
-        $(#[$attr:meta])*
-        pub async fn $name:ident( $(mut $arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
-            $body:block
-    ) => {
-        doc_comment! {
-            concat!(
-                $description, "\n",
-                " * Content-Type: ", $content_type, "\n",
-            ),
-            #[ doc = "### Example request:" ]
-            #[ doc = "```bash" ]
-            #[ doc = $wget ]
-            #[ doc = "```" ]
-            #[post($route_path, format = $content_type, data = "<form>")]
-            $( #[$attr] )*
-            pub async fn $name ( $(mut $arg_name : $arg_ty),* ) $(-> $ret)?
-                $body
-        }
-    };
-    (
-        #[describe($description:tt)]
-        #[example($wget:tt)]
-        #[get($route_path:tt)]
-        $(#[$attr:meta])*
-        pub async fn $name:ident( $(mut $arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
-            $body:block
-    ) => {
-        doc_comment! {
-            concat!(
-                $description, "\n"
-            ),
-            #[ doc = "### Example request:" ]
-            #[ doc = "```bash" ]
-            #[ doc = $wget ]
-            #[ doc = "```" ]
-            #[get($route_path)]
-            $( #[$attr] )*
-            pub async fn $name ( $(mut $arg_name : $arg_ty),* ) $(-> $ret)?
-                $body
-        }
-    }
-}
-
-create_api_with_doc!(
-    #[describe("List the simulations")]
-    #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation")]
-    #[get("/simulation")]
-    pub async fn get_simulation() -> Result<SimulationJson, String> {
-        match write_u64(&String::from("redis_key"), 36u64) {
-            Ok(_) => (),
-            Err(e) => return Err(format!("Could not write to redis DB: {}", e))
-        };
-        match read_u64(&String::from("redis_key")) {
-            Ok(i) => Ok(Json(Simulation { model_id: i, simulation_id: 0, simulation_type: "Powerflow".to_string(), load_profile_data: [].to_vec() })),
-            Err(e) => Err(format!("Could not write to redis DB: {}", e))
-        }
-    }
-);
 
 /// # Form for submitting a new Simulation
 ///
@@ -198,34 +135,14 @@ async fn parse_simulation_form(mut form: Form<SimulationForm<'_>>) -> (Status, J
     }
 }
 
-create_api_with_doc!(
-    #[describe("Create a new simulation")]
-    #[example("
-        curl -X POST
-             -H 'Accept: application/json'
-             -F file=@/path/to/example.zip
-             -F model_id=1
-             -F allowed_file_types=application/zip http://localhost:8000/simulation"
-    )]
-    #[post("/simulation", format = "multipart/form-data", data = "<form>")]
-    pub async fn post_simulation(mut form: Form < SimulationForm < '_ > > ) -> (Status, Json<Simulation>) {
-        parse_simulation_form(form).await
-    }
-);
-
-#[catch(422)]
-pub async fn incomplete_form(form: &rocket::Request<'_>) -> String {
-    info!("FORM: {}", form);
-    "Incomplete form".to_string()
-}
 
 #[rocket::main]
 #[doc = "The main entry point for Rocket" ]
 async fn main() -> Result <(), rocket::Error> {
 
     rocket::build()
-        .register("/", catchers![incomplete_form])
-        .mount("/", routes![get_simulation, post_simulation])
+        .register("/", catchers![routes::incomplete_form])
+        .mount("/", routes::get_routes())
         .launch()
         .await
 }
