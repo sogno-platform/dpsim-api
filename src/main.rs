@@ -5,8 +5,8 @@
 //!
 //! | Endpoint                    | Method | Description        | Implementation        | Parameters         | Returns           |
 //! |-----------------------------|--------|--------------------|-----------------------|--------------------|-------------------|
-//! | /simulation                 | POST   | Add a simulation   | [`post_simulation()`] | [`SimulationForm`] | [`Simulation`]    |
-//! | /simulation                 | GET    | List simulations   | [`get_simulation()`]  | None               | [ [`Simulation`] ]|
+//! | /simulation                 | POST   | Add a simulation   | [`routes::post_simulation()`] | [`SimulationForm`] | [`Simulation`]    |
+//! | /simulation                 | GET    | List simulations   | [`routes::get_simulation()`]  | None               | [ [`Simulation`] ]|
 //! | /simulation/ \[id]          | GET    | Simulation details | [`todo!`]             | None               | [`Simulation`]    |
 //! | /simulation/ \[id] /results | GET    | Simulation results | [`todo!`]             | None               | plain text        |
 //! | /simulation/ \[id] /logs    | GET    | Simulation logs    | [`todo!`]             | None               | plain text        |
