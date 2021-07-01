@@ -4,7 +4,7 @@ use lapin::{
 };
 use log::info;
 
-pub async fn publish() -> Result<()> {
+pub async fn publish(simulation: &super::Simulation) -> Result<()> {
     if std::env::var("RUST_LOG").is_err() {
         std::env::set_var("RUST_LOG", "info");
     }

@@ -28,6 +28,7 @@ fn test_get_simulation() {
     let reply = response.into_string().unwrap();
     let received_json: super::Simulation = serde_json::from_str( reply.as_str() ).unwrap();
     assert_json_eq!(received_json, super::Simulation{
+                                error: "".to_string(),
                                 simulation_id: 0,
                                 simulation_type: "Powerflow".to_string(),
                                 model_id: 36,
@@ -88,6 +89,7 @@ fn test_post_simulation() {
 
     let reply = response.into_string().unwrap();
     let expected_simulation = json!(super::Simulation {
+        error:             "".to_string(),
         simulation_id:     0,
         simulation_type:   "Powerflow".to_string(),
         model_id:          1,
