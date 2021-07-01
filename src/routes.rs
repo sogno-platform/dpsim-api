@@ -57,9 +57,10 @@ macro_rules! create_api_with_doc{
 
 fn error_simulation(message: String) -> super::Simulation {
     return super::Simulation {
+        error: message,
         model_id: 0,
         simulation_id: 0,
-        simulation_type: message,
+        simulation_type: "".to_string(),
         load_profile_data: [].to_vec()
     }
 }
@@ -92,14 +93,14 @@ create_api_with_doc!(
 create_api_with_doc!(
     #[describe("List the simulations")]
     #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation")]
-    #[get("/simulation")]
+    #[get("/simulation", format="application/json")]
     pub async fn get_simulation() -> (Status, Json<super::Simulation>) {
         match db::write_u64(&String::from("redis_key"), 36u64) {
             Ok(_) => (),
             Err(e) => return (Status::Unauthorized, Json(error_simulation(format!("Could not write to redis DB: {}", e))))
         };
         match db::read_u64(&String::from("redis_key")) {
-            Ok(i) => (Status::Ok, Json(super::Simulation { model_id: i, simulation_id: 0, simulation_type: "Powerflow".to_string(), load_profile_data: [].to_vec() })),
+            Ok(i) => (Status::Ok, Json(super::Simulation { error: "".to_string(), model_id: i, simulation_id: 0, simulation_type: "Powerflow".to_string(), load_profile_data: [].to_vec() })),
             Err(e) => return (Status::UnprocessableEntity, Json(error_simulation(format!("Could not read from redis DB: {}", e))))
         }
     }
@@ -110,14 +111,21 @@ create_api_with_doc!(
     #[example("
         curl -X POST
              -H 'Accept: application/json'
-             -F file=@/path/to/example.zip
+             -F file=@testdata/load_profile_data.zip
              -F model_id=1
              -F allowed_file_types=application/zip hocalhost:8000/simulation"
     )]
     #[post("/simulation", format = "multipart/form-data", data = "<form>")]
     pub async fn post_simulation(mut form: Form < super::SimulationForm < '_ > > ) -> (Status, Json<super::Simulation>) {
-        block_on(amqp::publish()).unwrap();
-        super::parse_simulation_form(form).await
+        match super::parse_simulation_form(form).await {
+            Ok(simulation) => {
+                match block_on(amqp::publish(&simulation)) {
+                    Ok(()) =>(Status::Accepted, simulation),
+                    Err(e) =>(Status::BadGateway, Json(error_simulation(format!("Could not publish to amqp server: {} ", e.to_string()))))
+                }
+            },
+            Err(e) => (Status::NotAcceptable, Json(error_simulation(format!("Error when parsing form: {} ", e.to_string()))))
+        }
     }
 );
 

@@ -25,7 +25,6 @@ use std::path::PathBuf;
 use rocket::fs::TempFile;
 use rocket::form::Form;
 use rocket::serde::json::Json;
-use rocket::http::Status;
 use serde::{Deserialize, Serialize};
 use std::io::Read;
 use std::fs::File;
@@ -34,28 +33,15 @@ use std::path::Path;
 use std::io::prelude::*;
 mod routes;
 #[cfg(not(test))] mod amqp;
-#[cfg(test)] mod amqp {
-    use lapin::Result;
-    pub async fn publish() -> Result<()> {
-        Ok(())
-    }
-}
 #[cfg(not(test))] mod db;
-#[cfg(test)] mod db {
-    pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
-        Ok(())
-    }
-    pub fn read_u64(_key: &String) -> redis::RedisResult<u64> {
-        Ok(36)
-    }
-}
 
 #[derive(Serialize, Deserialize, FromForm)]
 pub struct Simulation {
+    error: String,
+    load_profile_data: Vec <String>,
+    model_id:        u64,
     simulation_id:   u64,
     simulation_type: String,
-    model_id:        u64,
-    load_profile_data: Vec <String>
 }
 
 pub type SimulationJson = Json<Simulation>;
@@ -108,30 +94,31 @@ fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
     Ok(files)
 }
 
-async fn parse_simulation_form(mut form: Form<SimulationForm<'_>>) -> (Status, Json<Simulation>){
+async fn parse_simulation_form(mut form: Form<SimulationForm<'_>>) -> Result<Json<Simulation>, String>{
     let tmp_dir = PathBuf::from("/tmp/");
     let simulation_id = 0;
     let save_name = tmp_dir.join(format!("simulation_{}", simulation_id));
     match form.load_profile_data.persist_to(&save_name).await {
         Ok (()) => {
             let f = File::open(save_name).unwrap();
-            let (status, load_profile_data) = match read_zip(f) {
-                Ok(data) => (Status::Accepted, data),
-                Err(e) => (Status::NotAcceptable, [ e.to_string() ].to_vec())
-            };
-            (status, Json(Simulation {
-                simulation_id: simulation_id,
-                simulation_type: form.simulation_type.clone(),
-                model_id: form.model_id,
-                load_profile_data: load_profile_data
-            }))
+            match read_zip(f) {
+                Ok(data) => {
+                    let simulation = Simulation {
+                        error: "".to_string(),
+                        simulation_id: simulation_id,
+                        simulation_type: form.simulation_type.clone(),
+                        model_id: form.model_id,
+                        load_profile_data: data
+                    };
+                    match db::write_simulation(&simulation_id.to_string(), &simulation) {
+                        Ok(()) => Ok(Json(simulation)),
+                        Err(e) => Err(format!("Could not write to db: {}", e.to_string()))
+                    }
+                }
+                Err(e) => Err(format!("Failed to read zip: {}", e.to_string()))
+            }
         },
-        Err(e) => (Status::Conflict, Json(Simulation {
-            simulation_id: 0,
-            simulation_type: format!("Failed to store load profile data: {}", e),
-            model_id: 0,
-            load_profile_data: [].to_vec()
-        }))
+        Err(e) => Err(format!("Failed to store load profile data: {}", e))
     }
 }
 
@@ -147,4 +134,24 @@ async fn main() -> Result <(), rocket::Error> {
         .await
 }
 
-#[cfg(test)] mod tests;
+#[cfg(test)]
+mod amqp {
+    use lapin::Result;
+    pub async fn publish(simulation: &super::Simulation) -> Result<()> {
+        Ok(())
+    }
+}
+#[cfg(test)]
+mod db {
+    pub fn write_simulation(_key: &String, _value: &super::Simulation) -> redis::RedisResult<()> {
+        Ok(())
+    }
+    pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
+        Ok(())
+    }
+    pub fn read_u64(_key: &String) -> redis::RedisResult<u64> {
+        Ok(36)
+    }
+}
+#[cfg(test)]
+mod tests;
