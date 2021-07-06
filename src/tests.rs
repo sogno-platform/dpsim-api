@@ -1,7 +1,8 @@
 use rocket::local::blocking::Client;
 use rocket::Build;
 use serde::{Deserialize, Serialize};
-use crate::routes::{post_simulation, get_simulation, incomplete_form};
+use crate::routes::{get_routes, incomplete_form};
+use crate::{Simulation, SimulationType};
 use rocket::http::ContentType;
 // need this to read the file into the
 // byte array for the multipart test
@@ -9,12 +10,14 @@ use std::fs;
 use bytes::BufMut;
 use serde_json::json;
 use assert_json_diff::assert_json_eq;
+use crate::Template;
 
 #[launch]
 fn rocket() -> rocket::Rocket<Build> {
     rocket::build()
         .register("/", catchers![incomplete_form])
-        .mount("/", routes![get_simulation, post_simulation])
+        .mount("/", get_routes())
+        .attach(Template::fairing())
 }
 
 #[test]
@@ -26,14 +29,35 @@ fn test_get_simulation() {
     let response = client.get("/simulation").dispatch();
     assert_eq!(response.status().code, 200);
     let reply = response.into_string().unwrap();
-    let received_json: super::Simulation = serde_json::from_str( reply.as_str() ).unwrap();
-    assert_json_eq!(received_json, super::Simulation{
-                                error: "".to_string(),
-                                simulation_id: 0,
-                                simulation_type: "Powerflow".to_string(),
-                                model_id: 36,
-                                load_profile_data: [].to_vec()
-                             })
+    let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
+    let expected_json = Simulation {
+        error: "".to_string(),
+        simulation_id: 1,
+        simulation_type: SimulationType::Powerflow,
+        model_id: 36,
+        load_profile_data: [].to_vec()
+    };
+    assert_json_eq!(received_json, expected_json)
+}
+
+#[test]
+fn test_get_simulation_by_id() {
+    // Construct a client to use for dispatching requests.
+    let client = Client::untracked(rocket()).expect("valid rocket instance");
+
+    // Dispatch a request to 'GET /' and validate the response.
+    let response = client.get("/simulation/1").dispatch();
+    assert_eq!(response.status().code, 200);
+    let reply = response.into_string().unwrap();
+    let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
+    let expected_json = Simulation {
+        error: "".to_string(),
+        simulation_id: 1,
+        simulation_type: SimulationType::Powerflow,
+        model_id: 1,
+        load_profile_data: [].to_vec()
+    };
+    assert_json_eq!(received_json, expected_json)
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -90,8 +114,8 @@ fn test_post_simulation() {
     let reply = response.into_string().unwrap();
     let expected_simulation = json!(super::Simulation {
         error:             "".to_string(),
-        simulation_id:     0,
-        simulation_type:   "Powerflow".to_string(),
+        simulation_id:     1,
+        simulation_type:   SimulationType::Powerflow,
         model_id:          1,
         load_profile_data:
             vec![

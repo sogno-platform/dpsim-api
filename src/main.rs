@@ -34,6 +34,7 @@ use std::io::prelude::*;
 mod routes;
 #[cfg(not(test))] mod amqp;
 #[cfg(not(test))] mod db;
+use rocket_dyn_templates::Template;
 
 #[derive(Serialize, Deserialize, FromForm)]
 pub struct Simulation {
@@ -41,10 +42,8 @@ pub struct Simulation {
     load_profile_data: Vec <String>,
     model_id:        u64,
     simulation_id:   u64,
-    simulation_type: String,
+    simulation_type: SimulationType,
 }
-
-pub type SimulationJson = Json<Simulation>;
 
 /// # Form for submitting a new Simulation
 ///
@@ -60,11 +59,12 @@ pub type SimulationJson = Json<Simulation>;
 ///   - must be a valid id that exists in the associated CIM service
 #[derive(FromForm, Debug)]
 pub struct SimulationForm<'f> {
-    simulation_type: String,
+    simulation_type: SimulationType,
     load_profile_data: TempFile<'f>,
     model_id: u64
 }
 
+#[derive(FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
 enum SimulationType {
     Powerflow,
     Outage
@@ -96,7 +96,10 @@ fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
 
 async fn parse_simulation_form(mut form: Form<SimulationForm<'_>>) -> Result<Json<Simulation>, String>{
     let tmp_dir = PathBuf::from("/tmp/");
-    let simulation_id = 0;
+    let simulation_id = match db::get_new_simulation_id() {
+        Ok(id) => id,
+        Err(e) => return Err(format!("Failed to obtain new simulation id: {}", e))
+    };
     let save_name = tmp_dir.join(format!("simulation_{}", simulation_id));
     match form.load_profile_data.persist_to(&save_name).await {
         Ok (()) => {
@@ -106,7 +109,7 @@ async fn parse_simulation_form(mut form: Form<SimulationForm<'_>>) -> Result<Jso
                     let simulation = Simulation {
                         error: "".to_string(),
                         simulation_id: simulation_id,
-                        simulation_type: form.simulation_type.clone(),
+                        simulation_type: form.simulation_type,
                         model_id: form.model_id,
                         load_profile_data: data
                     };
@@ -130,6 +133,7 @@ async fn main() -> Result <(), rocket::Error> {
     rocket::build()
         .register("/", catchers![routes::incomplete_form])
         .mount("/", routes::get_routes())
+        .attach(Template::fairing())
         .launch()
         .await
 }
@@ -143,8 +147,16 @@ mod amqp {
 }
 #[cfg(test)]
 mod db {
+    use redis::RedisResult;
+    use crate::{Simulation, SimulationType};
+    pub fn get_new_simulation_id() -> RedisResult<u64> {
+        Ok(1)
+    }
     pub fn write_simulation(_key: &String, _value: &super::Simulation) -> redis::RedisResult<()> {
         Ok(())
+    }
+    pub fn read_simulation(_key: u64) -> redis::RedisResult<Simulation> {
+        Ok(Simulation { error: "".to_owned(), load_profile_data: [].to_vec(), model_id: 1, simulation_id: 1, simulation_type: SimulationType::Powerflow })
     }
     pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
         Ok(())

@@ -3,7 +3,7 @@
 
 ## This is a work in progress. Very little is currently implemented.
 
-### Read [the documentation](docs/dpsim_api/index.html)
+### Read [the documentation](https://sogno-platform.github.io/dpsim-api/dpsim_api/index.html)
 
 ### Start it up
 
@@ -22,10 +22,11 @@ cargo test
 ### See it in action
 
 ```bash
+docker-compose up -d rabbitmq redis-master
 ./curl.sh
 ```
 
-This will fire a POST request at the endpoint http://localhost:8000/simulation. If the file ~/example.zip should exist, it will be written to /tmp.
+The first command will start two required services, rabbitmq for aqmp messages and redis for simulation detail caching. The second command will fire a POST request at the endpoint http://localhost:8000/simulation. The file testdata/load_profile_data.zip will be used to create a simulation stub.
 
 ### Generate the documentation
 
