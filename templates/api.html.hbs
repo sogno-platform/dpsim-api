@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"></link>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script type="module">
+            import { Collapse } from 'bootstrap.esm.min.js'
+            var collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
+            var collapseList = collapseElementList.map(function (collapseEl) {
+                return new bootstrap.Collapse(collapseEl)
+            })
+        </script>
+
+    </head>
+    <body>
+        <div class="accordion" id="accordionExample">
+            {{#each routes}}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="{{heading_id}}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{collapse_id}}" aria-expanded="false" aria-controls="{{collapse_id}}">
+                        <li class="list-group-item">{{method}} for {{path}}</li>
+                    </button>
+                </h2>
+            </div>
+            <div id="{{collapse_id}}" class="accordion-collapse collapse" aria-labelledby="{{heading_id}}" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a href="{{link}}">Documentation for this endpoint</a>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </body>
+</html>
