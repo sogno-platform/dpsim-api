@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["dpsim_api"] = [{"text":"impl&lt;'__v&gt; <a class=\"trait\" href=\"https://api.rocket.rs/v0.5-rc/rocket/form/from_form_field/trait.FromFormField.html\" title=\"trait rocket::form::from_form_field::FromFormField\">FromFormField</a>&lt;'__v&gt; for <a class=\"enum\" href=\"dpsim_api/enum.SimulationType.html\" title=\"enum dpsim_api::SimulationType\">SimulationType</a>","synthetic":false,"types":["dpsim_api::SimulationType"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
