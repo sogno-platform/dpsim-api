@@ -63,7 +63,7 @@ fn test_get_simulation_by_id() {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SimulationPost<> {
     simulation_type: String,
-    load_profile_data: String,
+    load_profile_data: Vec<u8>,
     model_id: u64
 }
 
