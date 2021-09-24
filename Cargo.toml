@@ -6,16 +6,25 @@ edition = "2018"
 
 [dependencies]
 rocket = { version = "0.5.0-rc.1", features = [ "json" ] }
-serde = { version = "^1", features = ["derive"] }
+serde = { version = "1.0.64", features = ["derive"] }
+serde_json = "1.0.64"
 rocket_dyn_templates = { version = "0.1.0-rc.1", features = ["handlebars"] }
 redis = "0.20.1"
 log = "0.4.14"
 doc-comment = "0.3.3"
 bytes = "1.0.1"
-serde_json = "1.0.64"
 zip = "0.5.12"
 assert-json-diff = "2.0.1"
 lapin = "1.7.1"
 async-global-executor = "2.0.2"
 handlebars = "4.0.1"
 paste = "1.0.5"
+schemars = "^0.8"
+either = "1.6.1"
+
+# okapi version v0.7.0-alpha-1
+okapi = { git = 'https://github.com/GREsau/okapi' }
+# rocket okapi version v0.8.0-alpha-1
+rocket_okapi = { git = 'https://github.com/GREsau/okapi' }
+# rocket okapi codegen version v0.7.0-alpha-1
+rocket_okapi_codegen = { git = 'https://github.com/GREsau/okapi' }
