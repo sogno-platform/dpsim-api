@@ -60,6 +60,20 @@ fn test_get_simulation_by_id() {
     assert_json_eq!(received_json, expected_json)
 }
 
+#[test]
+fn test_get_openapi() {
+    // Construct a client to use for dispatching requests.
+    let client = Client::untracked(rocket()).expect("valid rocket instance");
+
+    // Dispatch a request to 'GET /' and validate the response.
+    let response = client.get("/openapi.json").dispatch();
+    assert_eq!(response.status().code, 200);
+    let reply = response.into_string().unwrap();
+    let received_json: serde_json::Value = serde_json::from_str( reply.as_str() ).unwrap();
+    println!("OPENAPI: {}", received_json)
+}
+
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SimulationPost<> {
     simulation_type: String,

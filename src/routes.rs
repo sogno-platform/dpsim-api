@@ -23,7 +23,7 @@ use rocket::{Request};
 use rocket::response::{self, Responder, Response};
 use rocket::fs::TempFile;
 use rocket::form::Form;
-use schemars::gen::SchemaGenerator;
+use schemars::{schema_for, JsonSchema, gen::SchemaGenerator, schema::Schema};
 
 #[doc = "Function to read a zip file"]
 fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
@@ -72,11 +72,19 @@ pub struct SimulationFormStruct<'f> {
 
 impl<'a> schemars::JsonSchema for SimulationFormStruct <'a> {
     fn schema_name() -> String {
-        "TempFile".to_owned()
+        "SimulationForm".to_owned()
     }
-    fn json_schema( _: &mut SchemaGenerator ) -> schemars::schema::Schema {
-        schemars::schema::SchemaObject::default().into()
+    fn json_schema(_gen: &mut SchemaGenerator) -> Schema {
+        schema_for!(SimulationFormStructJsonSchema).schema.into()
     }
+}
+
+#[allow(dead_code)]
+#[derive(JsonSchema)]
+pub struct SimulationFormStructJsonSchema {
+    load_profile_data: Vec<u8>,
+    model_id: u64,
+    simulation_type: SimulationType
 }
 
 async fn parse_simulation_form(mut form: Form<SimulationFormStruct<'_>>) -> Result<Json<Simulation>, String>{

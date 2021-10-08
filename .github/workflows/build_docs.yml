@@ -19,6 +19,9 @@ jobs:
       - name: Build docs
         run: cargo doc --no-deps
 
+      - name: Create openapi.json
+        run: ./scripts/generate_openapi.sh
+
       - name: Create doc redirect
         uses: "finnp/create-file-action@master"
         env:
