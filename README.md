@@ -23,7 +23,7 @@ cargo test
 
 ```bash
 docker-compose up -d rabbitmq redis-master
-./curl.sh
+./scripts/curl.sh
 ```
 
 The first command will start two required services, rabbitmq for aqmp messages and redis for simulation detail caching. The second command will fire a POST request at the endpoint http://localhost:8000/simulation. The file testdata/load_profile_data.zip will be used to create a simulation stub.
