@@ -361,6 +361,14 @@
 <span id="361">361</span>
 <span id="362">362</span>
 <span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rocket::response::Redirect</span>;
 <span class="kw">use</span> <span class="ident">rocket::serde::json</span>::{<span class="ident">Json</span>, <span class="ident">json</span>};
 <span class="kw">use</span> <span class="ident">rocket::http::Status</span>;
@@ -386,7 +394,7 @@
 <span class="kw">use</span> <span class="ident">rocket::response</span>::{<span class="self">self</span>, <span class="ident">Responder</span>, <span class="ident">Response</span>};
 <span class="kw">use</span> <span class="ident">rocket::fs::TempFile</span>;
 <span class="kw">use</span> <span class="ident">rocket::form::Form</span>;
-<span class="kw">use</span> <span class="ident">schemars::gen::SchemaGenerator</span>;
+<span class="kw">use</span> <span class="ident">schemars</span>::{<span class="ident">schema_for</span>, <span class="ident">JsonSchema</span>, <span class="ident">gen::SchemaGenerator</span>, <span class="ident">schema::Schema</span>};
 
 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Function to read a zip file&quot;</span>]</span>
 <span class="kw">fn</span> <span class="ident">read_zip</span>(<span class="ident">reader</span>: <span class="kw">impl</span> <span class="ident">Read</span> <span class="op">+</span> <span class="ident">Seek</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">zip::result::ZipResult</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
@@ -435,11 +443,19 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">schemars::JsonSchema</span> <span class="kw">for</span> <span class="ident">SimulationFormStruct</span> <span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">schema_name</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
-        <span class="string">&quot;TempFile&quot;</span>.<span class="ident">to_owned</span>()
+        <span class="string">&quot;SimulationForm&quot;</span>.<span class="ident">to_owned</span>()
     }
-    <span class="kw">fn</span> <span class="ident">json_schema</span>( <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SchemaGenerator</span> ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">schemars::schema::Schema</span> {
-        <span class="ident">schemars::schema::SchemaObject::default</span>().<span class="ident">into</span>()
+    <span class="kw">fn</span> <span class="ident">json_schema</span>(<span class="ident">_gen</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SchemaGenerator</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Schema</span> {
+        <span class="macro">schema_for!</span>(<span class="ident">SimulationFormStructJsonSchema</span>).<span class="ident">schema</span>.<span class="ident">into</span>()
     }
+}
+
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">JsonSchema</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimulationFormStructJsonSchema</span> {
+    <span class="ident">load_profile_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
+    <span class="ident">model_id</span>: <span class="ident">u64</span>,
+    <span class="ident">simulation_type</span>: <span class="ident">SimulationType</span>
 }
 
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">parse_simulation_form</span>(<span class="kw-2">mut</span> <span class="ident">form</span>: <span class="ident">Form</span><span class="op">&lt;</span><span class="ident">SimulationFormStruct</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Json</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span>, <span class="ident">String</span><span class="op">&gt;</span>{

@@ -1,0 +1,157 @@
+{
+  "components": {
+    "schemas": {
+      "Simulation": {
+        "description": "Struct for encapsulation Simulation details",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "load_profile_data": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "model_id": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "simulation_id": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "simulation_type": {
+            "$ref": "#/components/schemas/SimulationType"
+          }
+        },
+        "required": [
+          "error",
+          "load_profile_data",
+          "model_id",
+          "simulation_id",
+          "simulation_type"
+        ],
+        "type": "object"
+      },
+      "SimulationForm": {
+        "properties": {
+          "load_profile_data": {
+            "items": {
+              "format": "uint8",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "model_id": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "simulation_type": {
+            "$ref": "#/definitions/SimulationType"
+          }
+        },
+        "required": [
+          "load_profile_data",
+          "model_id",
+          "simulation_type"
+        ],
+        "title": "SimulationFormStructJsonSchema",
+        "type": "object"
+      },
+      "SimulationType": {
+        "description": "Enum for the various Simulation types",
+        "enum": [
+          "Powerflow",
+          "Outage"
+        ],
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "title": "dpsim-api",
+    "version": "0.1.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/simulation": {
+      "get": {
+        "description": "List the simulations ### Example request: ```bash curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation ```",
+        "operationId": "get_simulations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Simulation"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new simulation * Content-Type: multipart/form-data ### Example request: ```bash\n\ncurl -X POST -H 'Accept: application/json' -F file=@testdata/load_profile_data.zip -F model_id=1 -F allowed_file_types=application/zip hocalhost:8000/simulation ```",
+        "operationId": "post_simulation",
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationForm"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Simulation"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/simulation/{id}": {
+      "get": {
+        "description": "Show details for a simulation ### Example request: ```bash curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation/1 ```",
+        "operationId": "get_simulation_id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uint64",
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Simulation"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    }
+  }
+}
