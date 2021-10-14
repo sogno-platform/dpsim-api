@@ -34,4 +34,12 @@ The first command will start two required services, rabbitmq for aqmp messages a
 cargo doc --no-deps
 ```
 
+### Build the docker container and add it to localhost repo
+```bash
+./scripts/build_docker.sh
+```
 
+### Install using helm 
+```bash
+helm install dpsim-api helm/ --values helm/values.yaml
+```

@@ -4,3 +4,6 @@
 # is: 32 * 1024 * 1024 (32MiB)
 data-form = 33554432
 file = 33554432
+
+[global]
+address = "0.0.0.0"
