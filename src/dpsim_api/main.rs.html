@@ -162,24 +162,24 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">SimulationType</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">SimulationType::Powerflow</span>
     }
 }
 
 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;String conversion for the various Simulation types&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">SimulationType</span> {
-    <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">SimulationType::Powerflow</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Powerflow&quot;</span>.<span class="ident">to_owned</span>(),
-            <span class="ident">SimulationType::Outage</span>    <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;Outage&quot;</span>.<span class="ident">to_owned</span>()
+            <span class="ident">SimulationType::Powerflow</span> =&gt; <span class="string">&quot;Powerflow&quot;</span>.<span class="ident">to_owned</span>(),
+            <span class="ident">SimulationType::Outage</span>    =&gt; <span class="string">&quot;Outage&quot;</span>.<span class="ident">to_owned</span>()
         }
     }
 }
 
 <span class="attribute">#[<span class="ident">rocket::main</span>]</span>
 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The main entry point for Rocket&quot;</span> ]</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span> <span class="op">&lt;</span>(), <span class="ident">rocket::Error</span><span class="op">&gt;</span> {
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>() -&gt; <span class="prelude-ty">Result</span> <span class="op">&lt;</span>(), <span class="ident">rocket::Error</span><span class="op">&gt;</span> {
 
     <span class="ident">rocket::build</span>()
         .<span class="ident">register</span>(<span class="string">&quot;/&quot;</span>, <span class="macro">catchers!</span>[<span class="ident">routes::incomplete_form</span>])
@@ -192,7 +192,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">amqp</span> {
     <span class="kw">use</span> <span class="ident">lapin::Result</span>;
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">publish</span>(<span class="ident">_simulation</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">super</span>::Simulation</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">publish</span>(<span class="ident">_simulation</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">super</span>::Simulation</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
 }
@@ -200,19 +200,19 @@
 <span class="kw">mod</span> <span class="ident">db</span> {
     <span class="kw">use</span> <span class="ident">redis::RedisResult</span>;
     <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Simulation</span>, <span class="ident">SimulationType</span>};
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_new_simulation_id</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_new_simulation_id</span>() -&gt; <span class="ident">RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="number">1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_simulation</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">_value</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">super</span>::Simulation</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">redis::RedisResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_simulation</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">_value</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">super</span>::Simulation</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_simulation</span>(<span class="ident">_key</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">redis::RedisResult</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_simulation</span>(<span class="ident">_key</span>: <span class="ident">u64</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">Simulation</span> { <span class="ident">error</span>: <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>(), <span class="ident">load_profile_data</span>: [].<span class="ident">to_vec</span>(), <span class="ident">model_id</span>: <span class="number">1</span>, <span class="ident">simulation_id</span>: <span class="number">1</span>, <span class="ident">simulation_type</span>: <span class="ident">SimulationType::Powerflow</span> })
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_u64</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">_value</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">redis::RedisResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_u64</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">_value</span>: <span class="ident">u64</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u64</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">redis::RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_u64</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="number">36</span>)
     }
 }
