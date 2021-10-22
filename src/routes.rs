@@ -135,10 +135,11 @@ macro_rules! create_endpoint_with_doc{
             }
         }
         paste! {
+            #[allow(rustdoc::invalid_rust_codeblocks)]
             #[ doc = $description ]
             #[ doc = "\n\r * Content-Type: " $content_type ]
             #[ doc = "\n\r * Example request:\n\r" ]
-            #[ doc = "```text" ]
+            #[ doc = "```" ]
             #[ doc = $wget ]
             #[ doc = "```" ]
             #[openapi]
@@ -157,9 +158,10 @@ macro_rules! create_endpoint_with_doc{
         pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
             $body:block
     ) => {
+        #[allow(rustdoc::invalid_rust_codeblocks)]
         #[ doc = $description ]
         #[ doc = "\n\r * Example request:\n\r" ]
-        #[ doc = "```text" ]
+        #[ doc = "```" ]
         #[ doc = $wget ]
         #[ doc = "```" ]
         #[ $openapi ]
