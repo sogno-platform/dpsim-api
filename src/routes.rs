@@ -135,10 +135,10 @@ macro_rules! create_endpoint_with_doc{
             }
         }
         paste! {
-            #[ doc = $description]
-            #[ doc = " * Content-Type: " $content_type]
-            #[ doc = "### Example request:" ]
-            #[ doc = "```bash" ]
+            #[ doc = $description ]
+            #[ doc = "\n\r * Content-Type: " $content_type ]
+            #[ doc = "\n\r * Example request:\n\r" ]
+            #[ doc = "```text" ]
             #[ doc = $wget ]
             #[ doc = "```" ]
             #[openapi]
@@ -157,9 +157,9 @@ macro_rules! create_endpoint_with_doc{
         pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
             $body:block
     ) => {
-        #[ doc = $description]
-        #[ doc = "### Example request:" ]
-        #[ doc = "```bash" ]
+        #[ doc = $description ]
+        #[ doc = "\n\r * Example request:\n\r" ]
+        #[ doc = "```text" ]
         #[ doc = $wget ]
         #[ doc = "```" ]
         #[ $openapi ]
