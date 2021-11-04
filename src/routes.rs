@@ -122,6 +122,7 @@ macro_rules! create_endpoint_with_doc{
     (
         #[describe($description:tt)]
         #[example($wget:tt)]
+        #[summary($sum:tt)]
         #[post($route_path:tt, format = $content_type:tt, data = "<form>")]
         $(#[$attr:meta])*
         pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
@@ -136,6 +137,7 @@ macro_rules! create_endpoint_with_doc{
         }
         paste! {
             #[allow(rustdoc::invalid_rust_codeblocks)]
+            #[ doc = $sum]
             #[ doc = $description ]
             #[ doc = "\n\r * Content-Type: " $content_type ]
             #[ doc = "\n\r * Example request:\n\r" ]
@@ -152,6 +154,7 @@ macro_rules! create_endpoint_with_doc{
     (
         #[describe($description:tt)]
         #[example($wget:tt)]
+        #[summary($sum:tt)]
         #[$openapi:meta]
         #[get($route_path:tt, format = $content_type:tt)]
         $(#[$attr:meta])*
@@ -159,6 +162,7 @@ macro_rules! create_endpoint_with_doc{
             $body:block
     ) => {
         #[allow(rustdoc::invalid_rust_codeblocks)]
+        #[ doc = $sum]
         #[ doc = $description ]
         #[ doc = "\n\r * Example request:\n\r" ]
         #[ doc = "```" ]
@@ -220,6 +224,7 @@ struct RoutesContext {
 create_endpoint_with_doc!(
     #[describe("List the endpoints")]
     #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/api")]
+    #[summary("# SKIPPING OPENAPI GEN")]
     #[openapi(skip)]
     #[get("/api", format = "text/html")]
     pub async fn get_api() -> Template {
@@ -256,6 +261,7 @@ pub async fn get_root() -> Redirect {
 create_endpoint_with_doc!(
     #[describe("Show details for a simulation")]
     #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation/1")]
+    #[summary("# Get a simulation using the ID")]
     #[openapi]
     #[get("/simulation/<id>", format="application/json")]
     pub async fn get_simulation_id(id: u64) -> SimulationResult {
@@ -269,6 +275,7 @@ create_endpoint_with_doc!(
 create_endpoint_with_doc!(
     #[describe("List the simulations")]
     #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation")]
+    #[summary("# Get array of all simulations")]
     #[openapi]
     #[get("/simulation", format="application/json")]
     pub async fn get_simulations() -> SimulationResult {
@@ -298,6 +305,7 @@ create_endpoint_with_doc!(
              -F model_id=1
              -F allowed_file_types=application/zip hocalhost:8000/simulation"
     )]
+    #[summary("# Create a simulation")]
     #[post("/simulation", format = "multipart/form-data", data = "<form>")]
     pub async fn post_simulation(form: Form <SimulationFormStruct < '_ >> ) -> Result<Json<Simulation>, SimulationError> {
         match parse_simulation_form(form).await {
