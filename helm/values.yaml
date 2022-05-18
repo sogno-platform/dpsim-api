@@ -11,8 +11,8 @@ image:
   tag: latest
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: "dpsim-api"
+fullnameOverride: "dpsim-api"
 
 serviceAccount:
   # Specifies whether a service account should be created

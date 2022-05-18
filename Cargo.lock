@@ -552,7 +552,9 @@ dependencies = [
  "bytes",
  "doc-comment",
  "either",
+ "futures",
  "handlebars 4.1.0",
+ "hyper",
  "lapin",
  "log",
  "okapi",
@@ -565,6 +567,8 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
+ "tokio",
+ "yup-hyper-mock",
  "zip",
 ]
 
@@ -944,7 +948,7 @@ checksum = "527e8c9ac747e28542699a951517aa9a6945af506cd1f2e1b53a576c17b6cc11"
 dependencies = [
  "bytes",
  "fnv",
- "itoa",
+ "itoa 0.4.7",
 ]
 
 [[package]]
@@ -985,7 +989,7 @@ dependencies = [
  "http-body",
  "httparse",
  "httpdate",
- "itoa",
+ "itoa 0.4.7",
  "pin-project-lite",
  "socket2",
  "tokio",
@@ -1071,6 +1075,12 @@ name = "itoa"
 version = "0.4.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
+
+[[package]]
+name = "itoa"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1aab8fc367588b89dcee83ab0fd66b72b50b72fa1904d7095045ace2b0c81c35"
 
 [[package]]
 name = "kernel32-sys"
@@ -1371,8 +1381,9 @@ dependencies = [
 
 [[package]]
 name = "okapi"
-version = "0.7.0-alpha-1"
-source = "git+https://github.com/GREsau/okapi#867e5061d1383f95e99cd0b74654f89886ed0ade"
+version = "0.7.0-rc.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ce66b6366e049880a35c378123fddb630b1a1a3c37fa1ca70caaf4a09f6e2893"
 dependencies = [
  "log",
  "schemars",
@@ -1697,7 +1708,7 @@ dependencies = [
  "async-trait",
  "combine",
  "dtoa",
- "itoa",
+ "itoa 0.4.7",
  "percent-encoding",
  "sha1",
  "url",
@@ -1856,8 +1867,9 @@ dependencies = [
 
 [[package]]
 name = "rocket_okapi"
-version = "0.8.0-alpha-1"
-source = "git+https://github.com/GREsau/okapi#867e5061d1383f95e99cd0b74654f89886ed0ade"
+version = "0.8.0-rc.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0025aa04994af8cd8e1fcdd5a73579a395c941ae090ecb0a39b41cca7e237a20"
 dependencies = [
  "either",
  "log",
@@ -1871,8 +1883,9 @@ dependencies = [
 
 [[package]]
 name = "rocket_okapi_codegen"
-version = "0.7.0-alpha-1"
-source = "git+https://github.com/GREsau/okapi#867e5061d1383f95e99cd0b74654f89886ed0ade"
+version = "0.8.0-rc.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc114779fc27afb78179233e966f469e47fd7a98dc15181cff2574cdddb65612"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -1928,6 +1941,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bc6ab463ae35acccb5cba66c0084c985257b797d288b6050cc2f6ac1b266cb78"
 dependencies = [
  "dyn-clone",
+ "indexmap",
  "schemars_derive",
  "serde",
  "serde_json",
@@ -2028,11 +2042,11 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.64"
+version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "799e97dc9fdae36a5c8b8f2cae9ce2ee9fdce2058c57a93e6099d919fd982f79"
+checksum = "8e8d9fa5c3b304765ce1fd9c4c8a3de2c8db365a5b91be52f186efc675681d95"
 dependencies = [
- "itoa",
+ "itoa 1.0.1",
  "ryu",
  "serde",
 ]
@@ -2319,6 +2333,7 @@ dependencies = [
  "mio 0.7.13",
  "num_cpus",
  "once_cell",
+ "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "tokio-macros",
@@ -2657,6 +2672,19 @@ name = "yansi"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fc79f4a1e39857fc00c3f662cbf2651c771f00e9c15fe2abc341806bd46bd71"
+
+[[package]]
+name = "yup-hyper-mock"
+version = "5.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01da7b30633bf0a0a95443eb9dd524bda44c96072e19a7d0d775c96336d91d96"
+dependencies = [
+ "futures",
+ "hyper",
+ "log",
+ "mio 0.6.23",
+ "tokio",
+]
 
 [[package]]
 name = "zip"
