@@ -1,0 +1,7 @@
+{
+  "data": {
+    "fileID": "d297cb7c-b578-4da8-9d79-76432e8986e9",
+    "lastModified": "2022-04-27T09:27:09Z",
+    "url": "http://minio:9000/sogno-platform/d297cb7c-b578-4da8-9d79-76432e8986e9?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ALFRED123%2F20220427%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220427T092744Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=48ec50cecae04ca34693429bc740f9a0b81e829b6e696800e823399355ab83b9"
+  }
+}

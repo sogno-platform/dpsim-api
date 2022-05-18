@@ -22,24 +22,23 @@
 // owned by this one (main.rs)
 #![allow(rustdoc::private_intra_doc_links)]
 
-#![feature(proc_macro_hygiene, decl_macro)]
-
 #[macro_use]
 extern crate rocket;
 
 use rocket::serde::{Deserialize, Serialize};
 mod routes;
-#[cfg(not(test))] mod amqp;
+mod file_service;
+mod amqp;
 #[cfg(not(test))] mod db;
 use rocket_dyn_templates::Template;
 use schemars::JsonSchema;
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
 #[doc = "Struct for encapsulation Simulation details"]
 pub struct Simulation {
     error: String,
     load_profile_data: Vec <String>,
-    model_id:          u64,
+    model_id:          String,
     simulation_id:     u64,
     simulation_type:   SimulationType,
 }
@@ -80,13 +79,6 @@ async fn main() -> Result <(), rocket::Error> {
 }
 
 #[cfg(test)]
-mod amqp {
-    use lapin::Result;
-    pub async fn publish(_simulation: &super::Simulation) -> Result<()> {
-        Ok(())
-    }
-}
-#[cfg(test)]
 mod db {
     use redis::RedisResult;
     use crate::{Simulation, SimulationType};
@@ -97,13 +89,19 @@ mod db {
         Ok(())
     }
     pub fn read_simulation(_key: u64) -> redis::RedisResult<Simulation> {
-        Ok(Simulation { error: "".to_owned(), load_profile_data: [].to_vec(), model_id: 1, simulation_id: 1, simulation_type: SimulationType::Powerflow })
+        Ok(Simulation { error: "".to_owned(), load_profile_data: [].to_vec(), model_id: "1".to_string(), simulation_id: 1, simulation_type: SimulationType::Powerflow })
     }
     pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
         Ok(())
     }
     pub fn read_u64(_key: &String) -> redis::RedisResult<u64> {
         Ok(36)
+    }
+    pub fn write_string(_key: &String, _value: String) -> redis::RedisResult<()> {
+        Ok(())
+    }
+    pub fn read_string(_key: &String) -> redis::RedisResult<String> {
+        Ok("1".to_string())
     }
 }
 #[cfg(test)]

@@ -4,7 +4,7 @@ use redis::{Commands, RedisResult};
 use crate::Simulation;
 
 fn get_connection() -> redis::RedisResult<redis::Connection> {
-    let client = redis::Client::open("redis://127.0.0.1/")?;
+    let client = redis::Client::open("redis://redis-master/")?;
     client.get_connection()
 }
 
@@ -38,8 +38,9 @@ pub fn read_simulation(key: u64) -> Result<Simulation, RedisError> {
                 Ok(value_string) => match serde_json::from_str(&value_string) {
                     Ok(sim) => Ok(sim),
                     Err(e) => {
+                        let error_string = format!("value: {} error: {}", value_string, e.to_string());
                         Err(RedisError::from((redis::ErrorKind::IoError,
-                            "Could not convert string to Simulation".into(), e.to_string())))
+                            "Could not convert string to Simulation! ", error_string.into())))
                     }
                 }
                 Err(e) => return Err((redis::ErrorKind::IoError,
@@ -59,6 +60,18 @@ pub fn write_u64(key: &String, value: u64) -> redis::RedisResult<()> {
 
 #[doc = "Utility function for reading an int value from a key in a Redis DB"]
 pub fn read_u64(key: &String) -> redis::RedisResult<u64> {
+    let mut conn = get_connection()?;
+    conn.get(key)
+}
+
+#[doc = "Utility function for writing an int value to a key in a Redis DB"]
+pub fn write_string(key: &String, value: String) -> redis::RedisResult<()> {
+    let mut conn = get_connection()?;
+    conn.set(key, value)
+}
+
+#[doc = "Utility function for reading an int value from a key in a Redis DB"]
+pub fn read_string(key: &String) -> redis::RedisResult<String> {
     let mut conn = get_connection()?;
     conn.get(key)
 }

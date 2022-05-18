@@ -34,7 +34,7 @@ fn test_get_simulation() {
         error: "".to_string(),
         simulation_id: 1,
         simulation_type: SimulationType::Powerflow,
-        model_id: 36,
+        model_id: "1".to_string(),
         load_profile_data: [].to_vec()
     };
     assert_json_eq!(received_json, expected_json)
@@ -54,7 +54,7 @@ fn test_get_simulation_by_id() {
         error: "".to_string(),
         simulation_id: 1,
         simulation_type: SimulationType::Powerflow,
-        model_id: 1,
+        model_id: "1".to_string(),
         load_profile_data: [].to_vec()
     };
     assert_json_eq!(received_json, expected_json)
@@ -126,11 +126,12 @@ fn test_post_simulation() {
         .dispatch();
 
     let reply = response.into_string().unwrap();
+    println!("REPLY: {:?}", reply);
     let expected_simulation = json!(super::Simulation {
         error:             "".to_string(),
         simulation_id:     1,
         simulation_type:   SimulationType::Powerflow,
-        model_id:          1,
+        model_id:          "1".to_string(),
         load_profile_data:
             vec![
                 "Load_H_1.csv".to_string(),  "Load_H_10.csv".to_string(), "Load_H_11.csv".to_string(),

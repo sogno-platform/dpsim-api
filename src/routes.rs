@@ -13,17 +13,19 @@ use std::io::Read;
 use std::io::prelude::*;
 use std::ffi::OsStr;
 use std::path::Path;
+use std::str;
 use rocket_okapi::{ openapi, OpenApiError,
                     response::OpenApiResponderInner,
                     gen::OpenApiGenerator };
 use okapi::openapi3::Responses;
-use serde::Serialize;
+use serde::{ Serialize, Deserialize };
 use rocket::http::{ContentType};
 use rocket::{Request};
 use rocket::response::{self, Responder, Response};
 use rocket::fs::TempFile;
 use rocket::form::Form;
 use schemars::{schema_for, JsonSchema, gen::SchemaGenerator, schema::Schema};
+use crate::file_service;
 
 #[doc = "Function to read a zip file"]
 fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
@@ -60,14 +62,14 @@ fn osstr_to_string(str: &OsStr) -> String {
 ///   - ZIP file
 ///   - load profile data in CSV format
 /// * model_id
-///   - Integer
-///   - must be a valid id that exists in the associated CIM service
+///   - String
+///   - must be a valid id that exists in the associated sogno file service
 //#[derive(FromForm, Debug, Default, Serialize, Deserialize)]
 #[derive(FromForm, Debug)]
 pub struct SimulationFormStruct<'f> {
     simulation_type: SimulationType,
     load_profile_data: TempFile<'f>,
-    model_id: u64
+    model_id: String
 }
 
 impl<'a> schemars::JsonSchema for SimulationFormStruct <'a> {
@@ -83,7 +85,7 @@ impl<'a> schemars::JsonSchema for SimulationFormStruct <'a> {
 #[derive(JsonSchema)]
 pub struct SimulationFormStructJsonSchema {
     load_profile_data: Vec<u8>,
-    model_id: u64,
+    model_id: String,
     simulation_type: SimulationType
 }
 
@@ -103,7 +105,7 @@ async fn parse_simulation_form(mut form: Form<SimulationFormStruct<'_>>) -> Resu
                         error: "".to_string(),
                         simulation_id: simulation_id,
                         simulation_type: form.simulation_type,
-                        model_id: form.model_id,
+                        model_id: form.model_id.clone(),
                         load_profile_data: data
                     };
                     match db::write_simulation(&simulation_id.to_string(), &simulation) {
@@ -181,6 +183,12 @@ pub struct SimulationError {
     pub err: String,
     #[serde(skip)]
     pub http_status_code: rocket::http::Status,
+}
+
+impl From<hyper::Error> for SimulationError {
+    fn from(input: hyper::Error) -> Self {
+        return SimulationError { err: format!("Error converting url: {}", input), http_status_code: rocket::http::Status{ code: 500 } }
+    }
 }
 
 type SimulationResult = std::result::Result<Json<Simulation>, SimulationError>;
@@ -279,11 +287,11 @@ create_endpoint_with_doc!(
     #[openapi]
     #[get("/simulation", format="application/json")]
     pub async fn get_simulations() -> SimulationResult {
-        match db::write_u64(&String::from("redis_key"), 36u64) {
+        match db::write_string(&String::from("redis_key"), "filename".to_string()) {
             Ok(_) => (),
             Err(e) =>  return Err( SimulationError { err: format!("Could not write to redis DB: {}", e), http_status_code: Status::Unauthorized } )
         };
-        match db::read_u64(&String::from("redis_key")) {
+        match db::read_string(&String::from("redis_key")) {
             Ok(i) => Ok(Json(Simulation {
                 error: "".to_string(),
                 load_profile_data: [].to_vec(),
@@ -296,13 +304,30 @@ create_endpoint_with_doc!(
     }
 );
 
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = "Struct for encapsulation Simulation details"]
+pub struct AMQPSimulation {
+    error: String,
+    load_profile_data: Vec <String>,
+    pub model_url:         String,
+    simulation_id:     u64,
+    simulation_type:   SimulationType,
+}
+
+impl AMQPSimulation {
+    pub fn from_simulation(mut self, sim: Simulation) -> Self {
+        self.simulation_id = sim.simulation_id;
+        self
+    }
+}
+
 create_endpoint_with_doc!(
     #[describe("Create a new simulation")]
     #[example("
         curl -X POST
              -H 'Accept: application/json'
              -F file=@testdata/load_profile_data.zip
-             -F model_id=1
+             -F model_id=\"theModel.zip\"
              -F allowed_file_types=application/zip hocalhost:8000/simulation"
     )]
     #[summary("# Create a simulation")]
@@ -310,7 +335,17 @@ create_endpoint_with_doc!(
     pub async fn post_simulation(form: Form <SimulationFormStruct < '_ >> ) -> Result<Json<Simulation>, SimulationError> {
         match parse_simulation_form(form).await {
             Ok(simulation) => {
-                match block_on(amqp::publish(&simulation)) {
+                let model_id = &simulation.model_id;
+                let model_url = file_service::convert_id_to_url(model_id).await?;
+                let sim_id = simulation.simulation_id;
+                let amqp_sim = AMQPSimulation {
+                                                   error: "".to_string(),
+                                                   load_profile_data: vec!(),
+                                                   model_url: model_url,
+                                                   simulation_id: sim_id,
+                                                   simulation_type: SimulationType::Powerflow
+                                               };
+                match block_on(amqp::request_simulation(&amqp_sim)) {
                     Ok(()) => Ok(simulation),
                     Err(e) => Err(SimulationError  {
                                         err: format!("Could not publish to amqp server: {}", e),
@@ -342,7 +377,7 @@ fn document_link_page(fn_name: &str) -> Template {
 #[catch(422)]
 pub async fn incomplete_form(form: &rocket::Request<'_>) -> String {
     info!("FORM: {}", form);
-    "Incomplete form".to_string()
+    format!("Incomplete form.{}", form)
 }
 
 #[openapi(skip)]
