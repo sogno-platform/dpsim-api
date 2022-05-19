@@ -11,6 +11,15 @@ jobs:
   create-docker-container:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate tag name
+        run: |
+            if [[ "${{ github.repository_owner }}" != "sogno-platform" ]];
+            then
+                echo "TAG_NAME=sogno/dpsim:api-${{ github.repository_owner }}" >> $GITHUB_ENV
+            else
+                echo "TAG_NAME=sogno/dpsim:api" >> $GITHUB_ENV
+            fi
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -27,4 +36,4 @@ jobs:
          context: .
          file: Dockerfile
          push: true
-         tags: sogno/dpsim:api
+         tags: "${{ env.TAG_NAME }}"

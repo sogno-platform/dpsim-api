@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/dpsim-api
+  repository: sogno/dpsim
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: api
 
 imagePullSecrets: []
 nameOverride: "dpsim-api"
