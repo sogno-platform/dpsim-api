@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["dpsim_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html\" title=\"trait core::marker::Copy\">Copy</a> for <a class=\"enum\" href=\"dpsim_api/enum.SimulationType.html\" title=\"enum dpsim_api::SimulationType\">SimulationType</a>","synthetic":false,"types":["dpsim_api::SimulationType"]}];
+implementors["dpsim_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.60.0/core/marker/trait.Copy.html\" title=\"trait core::marker::Copy\">Copy</a> for <a class=\"enum\" href=\"dpsim_api/enum.SimulationType.html\" title=\"enum dpsim_api::SimulationType\">SimulationType</a>","synthetic":false,"types":["dpsim_api::SimulationType"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

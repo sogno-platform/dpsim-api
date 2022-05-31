@@ -14,9 +14,7 @@
             "type": "array"
           },
           "model_id": {
-            "format": "uint64",
-            "minimum": 0,
-            "type": "integer"
+            "type": "string"
           },
           "simulation_id": {
             "format": "uint64",
@@ -47,9 +45,7 @@
             "type": "array"
           },
           "model_id": {
-            "format": "uint64",
-            "minimum": 0,
-            "type": "integer"
+            "type": "string"
           },
           "simulation_type": {
             "$ref": "#/definitions/SimulationType"
@@ -98,7 +94,7 @@
         "summary": "Get array of all simulations"
       },
       "post": {
-        "description": "Create a new simulation\n\n* Content-Type: multipart/form-data\n\n* Example request:\n\n```\n\ncurl -X POST -H 'Accept: application/json' -F file=@testdata/load_profile_data.zip -F model_id=1 -F allowed_file_types=application/zip hocalhost:8000/simulation ```",
+        "description": "Create a new simulation\n\n* Content-Type: multipart/form-data\n\n* Example request:\n\n```\n\ncurl -X POST -H 'Accept: application/json' -F file=@testdata/load_profile_data.zip -F model_id=\"theModel.zip\" -F allowed_file_types=application/zip hocalhost:8000/simulation ```",
         "operationId": "post_simulation",
         "requestBody": {
           "content": {

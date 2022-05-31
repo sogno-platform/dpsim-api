@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["publish",""]]});
+initSidebarItems({"fn":[["publish",""],["request_simulation",""]]});

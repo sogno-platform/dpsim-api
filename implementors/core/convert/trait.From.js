@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["dpsim_api"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.60.0/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;Error&gt; for <a class=\"struct\" href=\"dpsim_api/routes/struct.SimulationError.html\" title=\"struct dpsim_api::routes::SimulationError\">SimulationError</a>","synthetic":false,"types":["dpsim_api::routes::SimulationError"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
