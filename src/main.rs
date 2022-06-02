@@ -25,44 +25,17 @@
 #[macro_use]
 extern crate rocket;
 
-use rocket::serde::{Deserialize, Serialize};
 mod routes;
 mod file_service;
 mod amqp;
 #[cfg(not(test))] mod db;
 use rocket_dyn_templates::Template;
-use schemars::JsonSchema;
+use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
-#[doc = "Struct for encapsulation Simulation details"]
-pub struct Simulation {
-    error: String,
-    load_profile_data: Vec <String>,
-    model_id:          String,
-    simulation_id:     u64,
-    simulation_type:   SimulationType,
-}
-
-#[doc = "Enum for the various Simulation types"]
-#[derive(FromFormField, Serialize, Deserialize, Debug, Copy, Clone, JsonSchema)]
-enum SimulationType {
-    Powerflow,
-    Outage
-}
-
-impl Default for SimulationType {
-    fn default() -> Self {
-        SimulationType::Powerflow
-    }
-}
-
-#[doc = "String conversion for the various Simulation types"]
-impl SimulationType {
-    fn to_string(&self) -> String {
-        match &*self {
-            SimulationType::Powerflow => "Powerflow".to_owned(),
-            SimulationType::Outage    => "Outage".to_owned()
-        }
+fn get_docs() -> SwaggerUIConfig {
+    SwaggerUIConfig {
+        url: "/openapi.json".to_string(),
+        ..Default::default()
     }
 }
 
@@ -73,6 +46,7 @@ async fn main() -> Result <(), rocket::Error> {
     rocket::build()
         .register("/", catchers![routes::incomplete_form])
         .mount("/", routes::get_routes())
+        .mount("/swagger", make_swagger_ui(&get_docs()))
         .attach(Template::fairing())
         .launch()
         .await
@@ -81,15 +55,15 @@ async fn main() -> Result <(), rocket::Error> {
 #[cfg(test)]
 mod db {
     use redis::RedisResult;
-    use crate::{Simulation, SimulationType};
+    use crate::routes::{Simulation, SimulationType};
     pub fn get_new_simulation_id() -> RedisResult<u64> {
         Ok(1)
     }
-    pub fn write_simulation(_key: &String, _value: &super::Simulation) -> redis::RedisResult<()> {
+    pub fn write_simulation(_key: &String, _value: &Simulation) -> redis::RedisResult<()> {
         Ok(())
     }
     pub fn read_simulation(_key: u64) -> redis::RedisResult<Simulation> {
-        Ok(Simulation { error: "".to_owned(), load_profile_data: [].to_vec(), model_id: "1".to_string(), simulation_id: 1, simulation_type: SimulationType::Powerflow })
+        Ok(Simulation { error: "".to_owned(), load_profile_id: "".into(), model_id: "1".to_string(), simulation_id: 1, simulation_type: SimulationType::Powerflow })
     }
     pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
         Ok(())

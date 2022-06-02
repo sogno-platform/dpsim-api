@@ -1,7 +1,7 @@
 
 extern crate redis;
 use redis::{Commands, RedisResult};
-use crate::Simulation;
+use crate::routes::Simulation;
 
 fn get_connection() -> redis::RedisResult<redis::Connection> {
     let client = redis::Client::open("redis://redis-master/")?;
@@ -15,7 +15,7 @@ pub fn get_new_simulation_id() -> RedisResult<u64> {
 }
 
 #[doc = "Function for writing a Simulation into a Redis DB"]
-pub fn write_simulation(key: &String, value: &super::Simulation) -> Result<(), redis::RedisError> {
+pub fn write_simulation(key: &String, value: &Simulation) -> Result<(), redis::RedisError> {
     let mut conn = get_connection()?;
     match serde_json::to_string(value) {
         Ok(value_str) => conn.set(key, value_str),

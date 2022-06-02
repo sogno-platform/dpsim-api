@@ -9,8 +9,10 @@ use log::info;
 use lapin::{
     Result,
 };
-use crate::routes::AMQPSimulation;
-use rocket::serde::json::json;
+use crate::routes::{Simulation, SimulationType};
+use rocket::serde::json::{json, Json};
+use serde::{ Serialize, Deserialize };
+use schemars::JsonSchema;
 #[cfg(test)]
 pub async fn publish(bytes: Vec<u8>) -> Result<()> {
     println!("AMQPSimulation: {:?}", bytes);
@@ -51,6 +53,28 @@ pub async fn publish(bytes: Vec<u8>) -> Result<()> {
         .await?;
     assert_eq!(confirm, Confirmation::NotRequested);
     Ok(())
+}
+
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = "Struct for encapsulation Simulation details"]
+pub struct AMQPSimulation {
+    error: String,
+    load_profile_url:  String,
+    model_url:         String,
+    simulation_id:     u64,
+    simulation_type:   SimulationType,
+}
+
+impl AMQPSimulation {
+    pub fn from_simulation(sim: &Json<Simulation>, model_url: String, load_profile_url: String) -> AMQPSimulation {
+        AMQPSimulation {
+            error:            "".into(),
+            simulation_id:    sim.simulation_id,
+            load_profile_url: load_profile_url,
+            model_url:        model_url,
+            simulation_type:  sim.simulation_type,
+        }
+    }
 }
 
 pub async fn request_simulation(_simulation: &AMQPSimulation) -> Result<()> {
