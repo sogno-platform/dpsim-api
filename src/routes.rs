@@ -1,55 +1,53 @@
-use rocket::response::Redirect;
+use rocket::response::{self, Redirect, Responder, Response};
 use rocket::serde::json::{Json, json};
-use rocket::http::Status;
 use async_global_executor::block_on;
 use crate::db;
 use crate::amqp;
+use crate::amqp::AMQPSimulation;
 use rocket_dyn_templates::{Template};
 use paste::paste;
-use crate::{Simulation, SimulationType};
-use std::path::PathBuf;
-use std::fs::File;
-use std::io::Read;
-use std::io::prelude::*;
-use std::ffi::OsStr;
-use std::path::Path;
 use std::str;
 use rocket_okapi::{ openapi, OpenApiError,
                     response::OpenApiResponderInner,
                     gen::OpenApiGenerator };
 use okapi::openapi3::Responses;
 use serde::{ Serialize, Deserialize };
-use rocket::http::{ContentType};
+use rocket::http::{ContentType, Status};
 use rocket::{Request};
-use rocket::response::{self, Responder, Response};
-use rocket::fs::TempFile;
-use rocket::form::Form;
-use schemars::{schema_for, JsonSchema, gen::SchemaGenerator, schema::Schema};
+use schemars::JsonSchema;
 use crate::file_service;
 
-#[doc = "Function to read a zip file"]
-fn read_zip(reader: impl Read + Seek) -> zip::result::ZipResult<Vec<String>> {
-    let mut zip = zip::ZipArchive::new(reader)?;
-    let mut files = Vec::new();
-
-    for i in 0..zip.len() {
-        let file = zip.by_index(i)?;
-        if file.is_file() {
-            let path = Path::new(file.name());
-            let stringy = match path.file_name() {
-                Some(file_name) => osstr_to_string(file_name),
-                None => "".into()
-            };
-            files.push(stringy);
-        }
-    }
-
-    Ok(files)
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = "Struct for encapsulation Simulation details"]
+pub struct Simulation {
+    pub error: String,
+    pub load_profile_id:   String,
+    pub model_id:          String,
+    pub simulation_id:     u64,
+    pub simulation_type:   SimulationType,
 }
 
-fn osstr_to_string(str: &OsStr) -> String {
-    let the_str = str.to_str().unwrap();
-    String::from(the_str)
+#[doc = "Enum for the various Simulation types"]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+pub enum SimulationType {
+    Powerflow,
+    Outage
+}
+
+impl Default for SimulationType {
+    fn default() -> Self {
+        SimulationType::Powerflow
+    }
+}
+
+#[doc = "String conversion for the various Simulation types"]
+impl SimulationType {
+    fn to_string(&self) -> String {
+        match &*self {
+            SimulationType::Powerflow => "Powerflow".to_owned(),
+            SimulationType::Outage    => "Outage".to_owned()
+        }
+    }
 }
 
 /// # Form for submitting a new Simulation
@@ -58,65 +56,34 @@ fn osstr_to_string(str: &OsStr) -> String {
 /// * simulation_type
 ///   - String
 ///   - must be one of "Powerflow", "Outage"
-/// * load_profile_data
-///   - ZIP file
-///   - load profile data in CSV format
+/// * load_profile_id
+///   - String
+///   - must be a valid id that exists in the associated sogno file service
 /// * model_id
 ///   - String
 ///   - must be a valid id that exists in the associated sogno file service
-//#[derive(FromForm, Debug, Default, Serialize, Deserialize)]
-#[derive(FromForm, Debug)]
-pub struct SimulationFormStruct<'f> {
-    simulation_type: SimulationType,
-    load_profile_data: TempFile<'f>,
-    model_id: String
+#[derive(FromForm, Debug, Serialize, Deserialize, JsonSchema)]
+pub struct SimulationForm {
+    pub simulation_type: SimulationType,
+    pub model_id: String,
+    pub load_profile_id: String
 }
 
-impl<'a> schemars::JsonSchema for SimulationFormStruct <'a> {
-    fn schema_name() -> String {
-        "SimulationForm".to_owned()
-    }
-    fn json_schema(_gen: &mut SchemaGenerator) -> Schema {
-        schema_for!(SimulationFormStructJsonSchema).schema.into()
-    }
-}
-
-#[allow(dead_code)]
-#[derive(JsonSchema)]
-pub struct SimulationFormStructJsonSchema {
-    load_profile_data: Vec<u8>,
-    model_id: String,
-    simulation_type: SimulationType
-}
-
-async fn parse_simulation_form(mut form: Form<SimulationFormStruct<'_>>) -> Result<Json<Simulation>, String>{
-    let tmp_dir = PathBuf::from("/tmp/");
+async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simulation>, String>{
     let simulation_id = match db::get_new_simulation_id() {
         Ok(id) => id,
         Err(e) => return Err(format!("Failed to obtain new simulation id: {}", e))
     };
-    let save_name = tmp_dir.join(format!("simulation_{}", simulation_id));
-    match form.load_profile_data.persist_to(&save_name).await {
-        Ok (()) => {
-            let f = File::open(save_name).unwrap();
-            match read_zip(f) {
-                Ok(data) => {
-                    let simulation = Simulation {
-                        error: "".to_string(),
-                        simulation_id: simulation_id,
-                        simulation_type: form.simulation_type,
-                        model_id: form.model_id.clone(),
-                        load_profile_data: data
-                    };
-                    match db::write_simulation(&simulation_id.to_string(), &simulation) {
-                        Ok(()) => Ok(Json(simulation)),
-                        Err(e) => Err(format!("Could not write to db: {}", e.to_string()))
-                    }
-                }
-                Err(e) => Err(format!("Failed to read zip: {}", e.to_string()))
-            }
-        },
-        Err(e) => Err(format!("Failed to store load profile data: {}", e))
+    let simulation = Simulation {
+        error: "".to_string(),
+        simulation_id: simulation_id,
+        simulation_type: form.simulation_type,
+        model_id: form.model_id.clone(),
+        load_profile_id: form.load_profile_id.clone()
+    };
+    match db::write_simulation(&simulation_id.to_string(), &simulation) {
+        Ok(()) => Ok(Json(simulation)),
+        Err(e) => Err(format!("Could not write to db: {}", e.to_string()))
     }
 }
 
@@ -294,7 +261,7 @@ create_endpoint_with_doc!(
         match db::read_string(&String::from("redis_key")) {
             Ok(i) => Ok(Json(Simulation {
                 error: "".to_string(),
-                load_profile_data: [].to_vec(),
+                load_profile_id: "".into(),
                 model_id: i,
                 simulation_id: 1,
                 simulation_type: SimulationType::Powerflow
@@ -303,23 +270,6 @@ create_endpoint_with_doc!(
         }
     }
 );
-
-#[derive(Debug, Serialize, Deserialize, JsonSchema)]
-#[doc = "Struct for encapsulation Simulation details"]
-pub struct AMQPSimulation {
-    error: String,
-    load_profile_data: Vec <String>,
-    pub model_url:         String,
-    simulation_id:     u64,
-    simulation_type:   SimulationType,
-}
-
-impl AMQPSimulation {
-    pub fn from_simulation(mut self, sim: Simulation) -> Self {
-        self.simulation_id = sim.simulation_id;
-        self
-    }
-}
 
 create_endpoint_with_doc!(
     #[describe("Create a new simulation")]
@@ -331,32 +281,27 @@ create_endpoint_with_doc!(
              -F allowed_file_types=application/zip hocalhost:8000/simulation"
     )]
     #[summary("# Create a simulation")]
-    #[post("/simulation", format = "multipart/form-data", data = "<form>")]
-    pub async fn post_simulation(form: Form <SimulationFormStruct < '_ >> ) -> Result<Json<Simulation>, SimulationError> {
+    #[post("/simulation", format = "application/json", data = "<form>")]
+    pub async fn post_simulation(form: Json<SimulationForm > ) -> Result<Json<Simulation>, SimulationError> {
         match parse_simulation_form(form).await {
             Ok(simulation) => {
-                let model_id = &simulation.model_id;
-                let model_url = file_service::convert_id_to_url(model_id).await?;
-                let sim_id = simulation.simulation_id;
-                let amqp_sim = AMQPSimulation {
-                                                   error: "".to_string(),
-                                                   load_profile_data: vec!(),
-                                                   model_url: model_url,
-                                                   simulation_id: sim_id,
-                                                   simulation_type: SimulationType::Powerflow
-                                               };
+                let model_id         = &simulation.model_id;
+                let load_profile_id  = &simulation.load_profile_id;
+                let model_url        = file_service::convert_id_to_url(model_id).await?;
+                let load_profile_url = file_service::convert_id_to_url(load_profile_id).await?;
+                let amqp_sim         = AMQPSimulation::from_simulation(&simulation, model_url, load_profile_url);
                 match block_on(amqp::request_simulation(&amqp_sim)) {
                     Ok(()) => Ok(simulation),
                     Err(e) => Err(SimulationError  {
-                                        err: format!("Could not publish to amqp server: {}", e),
-                                        http_status_code: Status::BadGateway
-                                  })
+                        err: format!("Could not publish to amqp server: {}", e),
+                        http_status_code: Status::BadGateway
+                    })
                 }
             },
             Err(e) => Err(SimulationError  {
-                                err: format!("Error when parsing form: {}", e),
-                                http_status_code: Status::NotAcceptable
-                          })
+                err: format!("Error when parsing form: {}", e),
+                http_status_code: Status::NotAcceptable
+            })
         }
     }
 );
@@ -366,6 +311,7 @@ fn document_link(fn_name: &str) -> String {
     format!("https://sogno-platform.github.io/dpsim-api/dpsim_api/routes/fn.{}{}", fn_name, ".html")
 }
 
+#[allow(dead_code)]
 #[doc = "Create an html button linking to the documentation page for the given function"]
 fn document_link_page(fn_name: &str) -> Template {
     let uri = document_link(fn_name);
@@ -380,37 +326,7 @@ pub async fn incomplete_form(form: &rocket::Request<'_>) -> String {
     format!("Incomplete form.{}", form)
 }
 
-#[openapi(skip)]
-#[get("/swagger.html")]
-pub async fn swagger_endpoint() -> (ContentType, &'static str) {
-    (ContentType::HTML, "<!DOCTYPE html>
-    <html>
-     <head>
-        <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.17.0/swagger-ui.css\">
-        <script src=\"//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js\"></script>
-        <script>
-
-            function render() {
-                var ui = SwaggerUIBundle({
-                    url:  `/openapi.json`,
-                    dom_id: '#swagger-ui',
-                    presets: [
-                        SwaggerUIBundle.presets.apis,
-                        SwaggerUIBundle.SwaggerUIStandalonePreset
-                    ]
-                });
-            }
-
-        </script>
-    </head>
-
-    <body onload=\"render()\">
-        <div id=\"swagger-ui\"></div>
-    </body>
-    </html>")
-}
-
 #[doc = "Returns the list of routes that we have defined"]
 pub fn get_routes() -> Vec<rocket::Route>{
-    return rocket_okapi::openapi_get_routes![ swagger_endpoint, get_root, get_api, get_simulations, post_simulation, get_simulation_id]
+    return rocket_okapi::openapi_get_routes![ get_root, get_api, get_simulations, post_simulation, get_simulation_id]
 }

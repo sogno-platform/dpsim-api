@@ -27,8 +27,6 @@ pub async fn get_data_from_url(url: &str) -> Result<Box<Bytes>, hyper::Error> {
 
     // Await the response...
     let mut resp = client.get(uri).await?;
-    println!("Response: {}", resp.status());
-
     let body = resp.body_mut();
     let mut buf = BytesMut::with_capacity(body.size_hint().lower() as usize);
     while let Some(chunk) = body.data().await {
@@ -48,11 +46,16 @@ pub async fn convert_id_to_url(model_id: &str) -> Result<String, hyper::Error>{
         Ok(boxed_data) => {
             let body = std::str::from_utf8(&boxed_data).unwrap();
             let body_json: serde_json::Value = serde_json::from_str(body).unwrap();
-            let url_str = body_json["data"]["url"].as_str().unwrap();
-            url_str.into()
+            if body_json.get("data".to_string()) != None {
+                let url_str = body_json["data"]["url"].as_str().unwrap();
+                url_str.into()
+            }
+            else {
+                let error_str = body_json["error"]["message"].as_str().unwrap();
+                error_str.into()
+            }
         },
         Err(error) => {
-            println!("ERROR: {}", error);
             error.to_string()
         }
     };
