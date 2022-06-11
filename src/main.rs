@@ -4,18 +4,19 @@
 //!
 //! ## Table of endpoints
 //!
-//! | Endpoint                    | Method | Description        | Implementation              | Parameters                      | Returns           |
-//! |-----------------------------|--------|--------------------|-----------------------------|---------------------------------|-------------------|
-//! | /simulation                 | POST   | Add a simulation   | [`post_simulation`][post_s] | [`SimulationFormStruct`][s_f_s] | [`Simulation`]    |
-//! | /simulation                 | GET    | List simulations   | [`get_simulations`][get_s]  | None                            | [ [`Simulation`] ]|
-//! | /simulation/ \[id]          | GET    | Simulation details | [`todo!`]                   | None                            | [`Simulation`]    |
-//! | /simulation/ \[id] /results | GET    | Simulation results | [`todo!`]                   | None                            | plain text        |
-//! | /simulation/ \[id] /logs    | GET    | Simulation logs    | [`todo!`]                   | None                            | plain text        |
-//! | /debug                      | GET    | DPsim-api debug    | [`todo!`]                   | None                            | plain text        |
+//! | Endpoint                    | Method | Description        | Implementation              | Parameters                      | Returns                |
+//! |-----------------------------|--------|--------------------|-----------------------------|---------------------------------|------------------------|
+//! | /simulation                 | POST   | Add a simulation   | [`post_simulation`][post_s] | [`SimulationForm`][s_f_s]       | [`Simulation`][sim]    |
+//! | /simulation                 | GET    | List simulations   | [`get_simulations`][get_s]  | None                            | [ [`Simulation`][sim] ]|
+//! | /simulation/ \[id]          | GET    | Simulation details | [`todo!`]                   | None                            | [`Simulation`][sim]    |
+//! | /simulation/ \[id] /results | GET    | Simulation results | [`todo!`]                   | None                            | plain text             |
+//! | /simulation/ \[id] /logs    | GET    | Simulation logs    | [`todo!`]                   | None                            | plain text             |
+//! | /debug                      | GET    | DPsim-api debug    | [`todo!`]                   | None                            | plain text             |
 //!
 //! [post_s]: routes::post_simulation()
 //! [get_s]: routes::get_simulations()
-//! [s_f_s]: routes::SimulationFormStruct
+//! [s_f_s]: routes::SimulationForm
+//! [sim]: routes::Simulation
 
 // stop rustdoc complaining that I'm linking
 // to the routes module, which is privately
@@ -63,7 +64,15 @@ mod db {
         Ok(())
     }
     pub fn read_simulation(_key: u64) -> redis::RedisResult<Simulation> {
-        Ok(Simulation { error: "".to_owned(), load_profile_id: "".into(), model_id: "1".to_string(), simulation_id: 1, simulation_type: SimulationType::Powerflow })
+        Ok(Simulation {
+               error:           "".to_owned(),
+               load_profile_id: "".into(),
+               model_id:        "1".to_string(),
+               results_id:      "1".to_string(),
+               results_data:    "1".to_string(),
+               simulation_id:   1,
+               simulation_type: SimulationType::Powerflow
+        })
     }
     pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
         Ok(())

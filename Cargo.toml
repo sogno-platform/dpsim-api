@@ -24,6 +24,8 @@ okapi = "0.7.0-rc.1"
 rocket_okapi = { version="0.8.0-rc.1", features = ["swagger"] }
 hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
+hyper-multipart-rfc7578 = "0.8"
+http = "0.2.8"
 
 [dev-dependencies]
 futures = "*"

@@ -63,16 +63,18 @@ pub struct AMQPSimulation {
     model_url:         String,
     simulation_id:     u64,
     simulation_type:   SimulationType,
+    results_file:      String
 }
 
 impl AMQPSimulation {
     pub fn from_simulation(sim: &Json<Simulation>, model_url: String, load_profile_url: String) -> AMQPSimulation {
         AMQPSimulation {
             error:            "".into(),
-            simulation_id:    sim.simulation_id,
             load_profile_url: load_profile_url,
             model_url:        model_url,
+            simulation_id:    sim.simulation_id,
             simulation_type:  sim.simulation_type,
+            results_file:     sim.results_id.clone(),
         }
     }
 }
@@ -88,6 +90,7 @@ pub async fn request_simulation(_simulation: &AMQPSimulation) -> Result<()> {
         "url" : [ _simulation.model_url ]
       },
       "parameters": {
+        "results_file": _simulation.results_file,
         "executable": "SLEW_Shmem_CIGRE_MV_PowerFlow",
         "name": "SLEW_Shmem_CIGRE_MV_PowerFlow",
         "timestep": 0.1,
