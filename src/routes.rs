@@ -1,11 +1,10 @@
 use rocket::response::{self, Redirect, Responder, Response};
-use rocket::serde::json::{Json, json};
+use rocket::serde::json::{Json};
 use async_global_executor::block_on;
 use crate::db;
 use crate::amqp;
 use crate::amqp::AMQPSimulation;
 use rocket_dyn_templates::{Template};
-use paste::paste;
 use std::str;
 use rocket_okapi::{ openapi, OpenApiError,
                     response::OpenApiResponderInner,
@@ -16,6 +15,7 @@ use rocket::http::{ContentType, Status};
 use rocket::{Request};
 use schemars::JsonSchema;
 use crate::file_service;
+use http::uri::InvalidUri as InvalidUri;
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema)]
 #[doc = "Struct for encapsulation Simulation details"]
@@ -23,6 +23,8 @@ pub struct Simulation {
     pub error: String,
     pub load_profile_id:   String,
     pub model_id:          String,
+    pub results_id:        String,
+    pub results_data:      String,
     pub simulation_id:     u64,
     pub simulation_type:   SimulationType,
 }
@@ -69,21 +71,30 @@ pub struct SimulationForm {
     pub load_profile_id: String
 }
 
-async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simulation>, String>{
+async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simulation>, SimulationError>{
     let simulation_id = match db::get_new_simulation_id() {
         Ok(id) => id,
-        Err(e) => return Err(format!("Failed to obtain new simulation id: {}", e))
+        Err(e) => return Err(SimulationError {
+                             err: format!("Failed to obtain new simulation id: {}", e),
+                             http_status_code: Status::BadGateway
+                         })
     };
+    let results_file     = file_service::create_results_file().await?;
     let simulation = Simulation {
-        error: "".to_string(),
-        simulation_id: simulation_id,
+        error:           "".to_string(),
+        load_profile_id: form.load_profile_id.clone(),
+        model_id:        form.model_id.clone(),
+        results_id:      results_file,
+        results_data:    "".into(),
+        simulation_id:   simulation_id,
         simulation_type: form.simulation_type,
-        model_id: form.model_id.clone(),
-        load_profile_id: form.load_profile_id.clone()
     };
     match db::write_simulation(&simulation_id.to_string(), &simulation) {
         Ok(()) => Ok(Json(simulation)),
-        Err(e) => Err(format!("Could not write to db: {}", e.to_string()))
+        Err(e) => Err(SimulationError {
+                      err: format!("Could not write to db: {}", e.to_string()),
+                      http_status_code: Status::BadGateway
+                  })
     }
 }
 
@@ -97,28 +108,20 @@ macro_rules! create_endpoint_with_doc{
         pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
             $body:block
     ) => {
-        paste! {
-            #[openapi(skip)]
-            #[get($route_path, rank=2, format = "text/html")]
-            pub async fn [<get_ $name>] (  ) -> Template {
-                document_link_page(stringify!( $name ))
-            }
-        }
-        paste! {
-            #[allow(rustdoc::invalid_rust_codeblocks)]
-            #[ doc = $sum]
-            #[ doc = $description ]
-            #[ doc = "\n\r * Content-Type: " $content_type ]
-            #[ doc = "\n\r * Example request:\n\r" ]
-            #[ doc = "```" ]
-            #[ doc = $wget ]
-            #[ doc = "```" ]
-            #[openapi]
-            #[post($route_path, format = $content_type, data = "<form>")]
-            $( #[$attr] )*
-            pub async fn $name ( $($arg_name : $arg_ty),* ) $(-> $ret)?
-                $body
-        }
+        #[allow(rustdoc::invalid_rust_codeblocks)]
+        #[ doc = $sum]
+        #[ doc = $description ]
+        #[ doc = "\n\r * Content-Type: " ]
+        #[ doc = $content_type ]
+        #[ doc = "\n\r * Example request:\n\r" ]
+        #[ doc = "```" ]
+        #[ doc = $wget ]
+        #[ doc = "```" ]
+        #[openapi]
+        #[post($route_path, format = $content_type, data = "<form>")]
+        $( #[$attr] )*
+        pub async fn $name ( $($arg_name : $arg_ty),* ) $(-> $ret)?
+            $body
     };
     (
         #[describe($description:tt)]
@@ -155,6 +158,12 @@ pub struct SimulationError {
 impl From<hyper::Error> for SimulationError {
     fn from(input: hyper::Error) -> Self {
         return SimulationError { err: format!("Error converting url: {}", input), http_status_code: rocket::http::Status{ code: 500 } }
+    }
+}
+
+impl From<InvalidUri> for SimulationError {
+    fn from(input: InvalidUri) -> Self {
+        return SimulationError { err: format!("Error converting uri: {}", input), http_status_code: rocket::http::Status{ code: 500 } }
     }
 }
 
@@ -241,7 +250,27 @@ create_endpoint_with_doc!(
     #[get("/simulation/<id>", format="application/json")]
     pub async fn get_simulation_id(id: u64) -> SimulationResult {
         match db::read_simulation(id) {
-            Ok(sim) => Ok(Json(sim)),
+            Ok(mut sim) => {
+                let uri: String = match file_service::convert_id_to_url(&sim.results_id).await {
+                    Ok(url) => url,
+                    Err(e) => return Err( SimulationError {
+                                              err: format!("Could not read convert results id to url. Results id:{} Error: {}", sim.results_id, e),
+                                              http_status_code: Status::Unauthorized
+                                          })
+                };
+                let data = file_service::get_data_from_url(&uri).await;
+                let results: String = match data {
+                    Ok(boxed_data) => {
+                        std::str::from_utf8(&boxed_data).unwrap().into()
+                    },
+                    Err(e) => return Err( SimulationError {
+                                              err: format!("Could not read results from url. Results id:{} Error: {}", sim.results_id, e),
+                                              http_status_code: Status::Unauthorized
+                                          })
+                };
+                sim.results_data = results;
+                Ok(Json(sim))
+            },
             Err(e) =>  Err( SimulationError { err: e.to_string(), http_status_code: Status::UnprocessableEntity } )
         }
     }
@@ -260,10 +289,12 @@ create_endpoint_with_doc!(
         };
         match db::read_string(&String::from("redis_key")) {
             Ok(i) => Ok(Json(Simulation {
-                error: "".to_string(),
+                error:           "".to_string(),
                 load_profile_id: "".into(),
-                model_id: i,
-                simulation_id: 1,
+                model_id:        i,
+                results_id:      "1".to_string(),
+                results_data:    "".to_string(),
+                simulation_id:   1,
                 simulation_type: SimulationType::Powerflow
             })),
             Err(e) => Err( SimulationError { err: format!("Could not read from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
@@ -282,7 +313,7 @@ create_endpoint_with_doc!(
     )]
     #[summary("# Create a simulation")]
     #[post("/simulation", format = "application/json", data = "<form>")]
-    pub async fn post_simulation(form: Json<SimulationForm > ) -> Result<Json<Simulation>, SimulationError> {
+    pub async fn post_simulation(form: Json<SimulationForm > ) -> SimulationResult {
         match parse_simulation_form(form).await {
             Ok(simulation) => {
                 let model_id         = &simulation.model_id;
@@ -292,16 +323,13 @@ create_endpoint_with_doc!(
                 let amqp_sim         = AMQPSimulation::from_simulation(&simulation, model_url, load_profile_url);
                 match block_on(amqp::request_simulation(&amqp_sim)) {
                     Ok(()) => Ok(simulation),
-                    Err(e) => Err(SimulationError  {
+                    Err(e) => Err(SimulationError {
                         err: format!("Could not publish to amqp server: {}", e),
                         http_status_code: Status::BadGateway
                     })
                 }
             },
-            Err(e) => Err(SimulationError  {
-                err: format!("Error when parsing form: {}", e),
-                http_status_code: Status::NotAcceptable
-            })
+            Err(e) => Err(e)
         }
     }
 );
@@ -309,14 +337,6 @@ create_endpoint_with_doc!(
 #[doc = "Create a link to the documentation page for the given function"]
 fn document_link(fn_name: &str) -> String {
     format!("https://sogno-platform.github.io/dpsim-api/dpsim_api/routes/fn.{}{}", fn_name, ".html")
-}
-
-#[allow(dead_code)]
-#[doc = "Create an html button linking to the documentation page for the given function"]
-fn document_link_page(fn_name: &str) -> Template {
-    let uri = document_link(fn_name);
-    let context = json!({ "name": fn_name.to_string(), "link": uri });
-    Template::render("doc_link", &context)
 }
 
 #[doc = "Handler for when an incomplete form has been submitted"]

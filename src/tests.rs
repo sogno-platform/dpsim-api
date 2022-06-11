@@ -28,10 +28,12 @@ fn test_get_simulation() {
     let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
     let expected_json = Simulation {
         error:           "".to_string(),
+        load_profile_id: "".to_string(),
+        model_id:        "1".to_string(),
+        results_id:      "1".to_string(),
+        results_data:    "".to_string(),
         simulation_id:   1,
         simulation_type: SimulationType::Powerflow,
-        model_id:        "1".to_string(),
-        load_profile_id: "".to_string()
     };
     assert_json_eq!(received_json, expected_json)
 }
@@ -48,10 +50,19 @@ fn test_get_simulation_by_id() {
     let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
     let expected_json = Simulation {
         error:           "".to_string(),
+        load_profile_id: "".to_string(),
+        model_id:        "1".to_string(),
+        results_id:      "1".to_string(),
+        results_data:    r#"{
+  "data": {
+    "fileID": "d297cb7c-b578-4da8-9d79-76432e8986e9",
+    "lastModified": "2022-04-27T09:27:09Z",
+    "url": "http://minio:9000/sogno-platform/d297cb7c-b578-4da8-9d79-76432e8986e9?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ALFRED123%2F20220427%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220427T092744Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=48ec50cecae04ca34693429bc740f9a0b81e829b6e696800e823399355ab83b9"
+  }
+}
+"#.to_string(),
         simulation_id:   1,
         simulation_type: SimulationType::Powerflow,
-        model_id:        "1".to_string(),
-        load_profile_id: "".to_string()
     };
     assert_json_eq!(received_json, expected_json)
 }
@@ -77,7 +88,6 @@ pub struct SimulationPost<> {
     model_id:        u64
 }
 
-// multipart post code based on the example at https://github.com/SergioBenitez/Rocket/issues/1591
 #[test]
 fn test_post_simulation() {
     let client = Client::untracked(rocket()).expect("valid rocket instance");
@@ -98,10 +108,12 @@ fn test_post_simulation() {
     println!("REPLY: {:?}", reply);
     let expected_simulation = json!(Simulation {
         error:             "".to_string(),
+        load_profile_id:   "1".to_string(),
+        model_id:          "1".to_string(),
+        results_id:        "100".to_string(),
+        results_data:      "".to_string(),
         simulation_id:     1,
         simulation_type:   SimulationType::Powerflow,
-        model_id:          "1".to_string(),
-        load_profile_id:   "1".to_string()
     });
     let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
     assert_json_eq!(expected_simulation, received_json)
