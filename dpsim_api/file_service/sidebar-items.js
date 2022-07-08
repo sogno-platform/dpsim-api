@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["convert_id_to_url","Function to get a URL from sogno-file-service using a file ID"],["get_data_from_url",""]]});
+initSidebarItems({"fn":[["convert_id_to_url","Function to get a URL from sogno-file-service using a file ID"],["create_results_file",""],["get_data_from_url",""],["post_results_file",""]]});
