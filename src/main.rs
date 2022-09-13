@@ -57,6 +57,7 @@ async fn main() -> Result <(), rocket::Error> {
 mod db {
     use redis::RedisResult;
     use crate::routes::{Simulation, SimulationType};
+    use crate::routes::{DomainType, SolverType};
     pub fn get_new_simulation_id() -> RedisResult<u64> {
         Ok(1)
     }
@@ -71,7 +72,11 @@ mod db {
                results_id:      "1".to_string(),
                results_data:    "1".to_string(),
                simulation_id:   1,
-               simulation_type: SimulationType::Powerflow
+               simulation_type: SimulationType::Powerflow,
+               domain:          DomainType::SP,
+               solver:          SolverType::NRP,
+               timestep:        1,
+               finaltime:       360
         })
     }
     pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
