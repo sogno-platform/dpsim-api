@@ -9,7 +9,7 @@ use log::info;
 use lapin::{
     Result,
 };
-use crate::routes::{Simulation, SimulationType};
+use crate::routes::{Simulation, SimulationType, DomainType, SolverType};
 use rocket::serde::json::{json, Json};
 use serde::{ Serialize, Deserialize };
 use schemars::JsonSchema;
@@ -63,7 +63,11 @@ pub struct AMQPSimulation {
     model_url:         String,
     simulation_id:     u64,
     simulation_type:   SimulationType,
-    results_file:      String
+    results_file:      String,
+    domain:            DomainType,
+    solver:            SolverType,
+    timestep:          u64,
+    finaltime:         u64
 }
 
 impl AMQPSimulation {
@@ -75,6 +79,10 @@ impl AMQPSimulation {
             simulation_id:    sim.simulation_id,
             simulation_type:  sim.simulation_type,
             results_file:     sim.results_id.clone(),
+            domain:          DomainType::SP,
+            solver:          SolverType::NRP,
+            timestep:        1,
+            finaltime:       360
         }
     }
 }
@@ -90,7 +98,11 @@ pub async fn request_simulation(_simulation: &AMQPSimulation) -> Result<()> {
         "url" : [ _simulation.model_url ]
       },
       "parameters": {
-        "results_file": _simulation.results_file,
+        "domain":          _simulation.domain,
+        "solver":          _simulation.solver,
+        "timestep":        _simulation.timestep,
+        "finaltime":       _simulation.finaltime,
+        "results_file":    _simulation.results_file,
         "executable": "SLEW_Shmem_CIGRE_MV_PowerFlow",
         "name": "SLEW_Shmem_CIGRE_MV_PowerFlow",
         "timestep": 0.1,

@@ -1,7 +1,7 @@
 use rocket::local::blocking::Client;
 use rocket::Build;
 use serde::{Deserialize, Serialize};
-use crate::routes::{Simulation, SimulationType, get_routes, incomplete_form};
+use crate::routes::{Simulation, SimulationType, DomainType, SolverType, get_routes, incomplete_form};
 use rocket::http::ContentType;
 use serde_json::json;
 use assert_json_diff::assert_json_eq;
@@ -34,6 +34,10 @@ fn test_get_simulation() {
         results_data:    "".to_string(),
         simulation_id:   1,
         simulation_type: SimulationType::Powerflow,
+        domain:          DomainType::SP,
+        solver:          SolverType::NRP,
+        timestep:        1,
+        finaltime:       360
     };
     assert_json_eq!(received_json, expected_json)
 }
@@ -53,6 +57,10 @@ fn test_get_simulation_by_id() {
         load_profile_id: "".to_string(),
         model_id:        "1".to_string(),
         results_id:      "1".to_string(),
+        domain:          DomainType::SP,
+        solver:          SolverType::NRP,
+        timestep:        1,
+        finaltime:       360,
         results_data:    r#"{
   "data": {
     "fileID": "d297cb7c-b578-4da8-9d79-76432e8986e9",
@@ -96,7 +104,15 @@ fn test_post_simulation() {
         .parse::<ContentType>()
         .unwrap();
    
-    let form = SimulationForm { model_id: "1".to_string(), load_profile_id: "1".to_string(), simulation_type: SimulationType::Powerflow.into() };
+    let form = SimulationForm {
+        model_id: "1".to_string(),
+        load_profile_id: "1".to_string(),
+        simulation_type: SimulationType::Powerflow.into(),
+        domain:          DomainType::SP,
+        solver:          SolverType::NRP,
+        timestep:        1,
+        finaltime:       360,
+    };
     let body = serde_json::to_string(&form).unwrap();
     let response = client.post("/simulation")
         .header(ct)
@@ -114,6 +130,10 @@ fn test_post_simulation() {
         results_data:      "".to_string(),
         simulation_id:     1,
         simulation_type:   SimulationType::Powerflow,
+        domain:            DomainType::SP,
+        solver:            SolverType::NRP,
+        timestep:          1,
+        finaltime:         360,
     });
     let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
     assert_json_eq!(expected_simulation, received_json)

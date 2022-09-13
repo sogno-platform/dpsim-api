@@ -27,6 +27,10 @@ pub struct Simulation {
     pub results_data:      String,
     pub simulation_id:     u64,
     pub simulation_type:   SimulationType,
+    pub domain:            DomainType,
+    pub solver:            SolverType,
+    pub timestep:          u64,
+    pub finaltime:         u64
 }
 
 #[doc = "Enum for the various Simulation types"]
@@ -34,6 +38,22 @@ pub struct Simulation {
 pub enum SimulationType {
     Powerflow,
     Outage
+}
+
+#[doc = "Enum for the various Simulation types"]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+pub enum DomainType {
+    SP,
+    DP,
+    EMT
+}
+
+#[doc = "Enum for the various Solver types"]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+pub enum SolverType {
+    MNA,
+    DAE,
+    NRP
 }
 
 impl Default for SimulationType {
@@ -66,9 +86,17 @@ impl SimulationType {
 ///   - must be a valid id that exists in the associated sogno file service
 #[derive(FromForm, Debug, Serialize, Deserialize, JsonSchema)]
 pub struct SimulationForm {
-    pub simulation_type: SimulationType,
-    pub model_id: String,
-    pub load_profile_id: String
+    pub simulation_type:   SimulationType,
+    pub model_id:          String,
+    pub load_profile_id:   String,
+    #[field(default = DomainType::SP)]
+    pub domain:            DomainType,
+    #[field(default = SolverType::NRP)]
+    pub solver:            SolverType,
+    #[field(default = 1)]
+    pub timestep:          u64,
+    #[field(default = 30)]
+    pub finaltime:         u64
 }
 
 async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simulation>, SimulationError>{
@@ -88,6 +116,10 @@ async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simula
         results_data:    "".into(),
         simulation_id:   simulation_id,
         simulation_type: form.simulation_type,
+        domain:          form.domain,
+        solver:          form.solver,
+        timestep:        form.timestep,
+        finaltime:       form.finaltime
     };
     match db::write_simulation(&simulation_id.to_string(), &simulation) {
         Ok(()) => Ok(Json(simulation)),
@@ -295,7 +327,11 @@ create_endpoint_with_doc!(
                 results_id:      "1".to_string(),
                 results_data:    "".to_string(),
                 simulation_id:   1,
-                simulation_type: SimulationType::Powerflow
+                simulation_type: SimulationType::Powerflow,
+                domain:          DomainType::SP,
+                solver:          SolverType::NRP,
+                timestep:        1,
+                finaltime:       360
             })),
             Err(e) => Err( SimulationError { err: format!("Could not read from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
         }
