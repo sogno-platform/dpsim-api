@@ -1,11 +1,28 @@
 {
   "components": {
     "schemas": {
+      "DomainType": {
+        "description": "Enum for the various Simulation types",
+        "enum": [
+          "SP",
+          "DP",
+          "EMT"
+        ],
+        "type": "string"
+      },
       "Simulation": {
         "description": "Struct for encapsulation Simulation details",
         "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/DomainType"
+          },
           "error": {
             "type": "string"
+          },
+          "finaltime": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
           },
           "load_profile_id": {
             "type": "string"
@@ -26,22 +43,42 @@
           },
           "simulation_type": {
             "$ref": "#/components/schemas/SimulationType"
+          },
+          "solver": {
+            "$ref": "#/components/schemas/SolverType"
+          },
+          "timestep": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
+          "domain",
           "error",
+          "finaltime",
           "load_profile_id",
           "model_id",
           "results_data",
           "results_id",
           "simulation_id",
-          "simulation_type"
+          "simulation_type",
+          "solver",
+          "timestep"
         ],
         "type": "object"
       },
       "SimulationForm": {
         "description": "## Parameters: * simulation_type - String - must be one of \"Powerflow\", \"Outage\" * load_profile_id - String - must be a valid id that exists in the associated sogno file service * model_id - String - must be a valid id that exists in the associated sogno file service",
         "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/DomainType"
+          },
+          "finaltime": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
           "load_profile_id": {
             "type": "string"
           },
@@ -50,12 +87,24 @@
           },
           "simulation_type": {
             "$ref": "#/components/schemas/SimulationType"
+          },
+          "solver": {
+            "$ref": "#/components/schemas/SolverType"
+          },
+          "timestep": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
+          "domain",
+          "finaltime",
           "load_profile_id",
           "model_id",
-          "simulation_type"
+          "simulation_type",
+          "solver",
+          "timestep"
         ],
         "title": "Form for submitting a new Simulation",
         "type": "object"
@@ -65,6 +114,15 @@
         "enum": [
           "Powerflow",
           "Outage"
+        ],
+        "type": "string"
+      },
+      "SolverType": {
+        "description": "Enum for the various Solver types",
+        "enum": [
+          "MNA",
+          "DAE",
+          "NRP"
         ],
         "type": "string"
       }
