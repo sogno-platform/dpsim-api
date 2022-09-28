@@ -5,7 +5,7 @@ use crate::db;
 use crate::amqp;
 use crate::amqp::AMQPSimulation;
 use rocket_dyn_templates::{Template};
-use std::str;
+use std::{ str, fmt };
 use rocket_okapi::{ openapi, OpenApiError,
                     response::OpenApiResponderInner,
                     gen::OpenApiGenerator };
@@ -33,11 +33,36 @@ pub struct Simulation {
     pub finaltime:         u64
 }
 
+impl fmt::Display for Simulation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.simulation_id, self.simulation_type, self.model_id)
+    }
+}
+
+impl fmt::Display for SimulationSummary {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.simulation_id, self.simulation_type, self.model_id)
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+pub struct SimulationSummary {
+    pub simulation_id:     u64,
+    pub model_id:          String,
+    pub simulation_type:   SimulationType,
+}
+
 #[doc = "Enum for the various Simulation types"]
 #[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum SimulationType {
     Powerflow,
     Outage
+}
+
+impl fmt::Display for SimulationType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self)
+    }
 }
 
 #[doc = "Enum for the various Simulation types"]
@@ -308,32 +333,44 @@ create_endpoint_with_doc!(
     }
 );
 
+#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = "Struct for encapsulation Simulation details"]
+pub struct SimulationArray {
+    pub simulations: Vec<SimulationSummary>
+}
+
 create_endpoint_with_doc!(
     #[describe("List the simulations")]
     #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation")]
     #[summary("# Get array of all simulations")]
     #[openapi]
     #[get("/simulation", format="application/json")]
-    pub async fn get_simulations() -> SimulationResult {
-        match db::write_string(&String::from("redis_key"), "filename".to_string()) {
-            Ok(_) => (),
-            Err(e) =>  return Err( SimulationError { err: format!("Could not write to redis DB: {}", e), http_status_code: Status::Unauthorized } )
-        };
-        match db::read_string(&String::from("redis_key")) {
-            Ok(i) => Ok(Json(Simulation {
-                error:           "".to_string(),
-                load_profile_id: "".into(),
-                model_id:        i,
-                results_id:      "1".to_string(),
-                results_data:    "".to_string(),
-                simulation_id:   1,
-                simulation_type: SimulationType::Powerflow,
-                domain:          DomainType::SP,
-                solver:          SolverType::NRP,
-                timestep:        1,
-                finaltime:       360
-            })),
-            Err(e) => Err( SimulationError { err: format!("Could not read from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
+    pub async fn get_simulations() -> Result<Json<SimulationArray>, SimulationError> {
+        match db::get_number_of_simulations() {
+            Ok(number_of_simulations) => {
+                let mut simvec = Vec::new();
+                // "The range start..end contains all values with start <= x < end. It is empty if start >= end."
+                // from https://doc.rust-lang.org/std/ops/struct.Range.html
+                let last_plus_one = number_of_simulations+1;
+                for n in 1..last_plus_one {
+                    match db::read_simulation(n) {
+                        Ok(sim) => {
+                            let sim_summary = SimulationSummary {
+                                simulation_id:     sim.simulation_id,
+                                model_id:          sim.model_id,
+                                simulation_type:   sim.simulation_type,
+                            };
+                            simvec.push(sim_summary);
+                        }
+                        Err(e) => return Err( SimulationError { err: format!("Could not read simulation {} from redis DB: {}", n, e), http_status_code: Status::UnprocessableEntity} )
+                    }
+                }
+                let simarray = SimulationArray {
+                    simulations: simvec,
+                };
+                Ok(Json(simarray))
+            },
+            Err(e) => Err( SimulationError { err: format!("Could not read number of simulations from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
         }
     }
 );

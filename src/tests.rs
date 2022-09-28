@@ -1,7 +1,7 @@
 use rocket::local::blocking::Client;
 use rocket::Build;
 use serde::{Deserialize, Serialize};
-use crate::routes::{Simulation, SimulationType, DomainType, SolverType, get_routes, incomplete_form};
+use crate::routes::{Simulation, SimulationArray, SimulationSummary, SimulationType, DomainType, SolverType, get_routes, incomplete_form};
 use rocket::http::ContentType;
 use serde_json::json;
 use assert_json_diff::assert_json_eq;
@@ -17,7 +17,7 @@ fn rocket() -> rocket::Rocket<Build> {
 }
 
 #[test]
-fn test_get_simulation() {
+fn test_get_simulations() {
     // Construct a client to use for dispatching requests.
     let client = Client::untracked(rocket()).expect("valid rocket instance");
 
@@ -25,21 +25,14 @@ fn test_get_simulation() {
     let response = client.get("/simulation").dispatch();
     assert_eq!(response.status().code, 200);
     let reply = response.into_string().unwrap();
-    let received_json: Simulation = serde_json::from_str( reply.as_str() ).unwrap();
-    let expected_json = Simulation {
-        error:           "".to_string(),
-        load_profile_id: "".to_string(),
-        model_id:        "1".to_string(),
-        results_id:      "1".to_string(),
-        results_data:    "".to_string(),
+    let received_json: SimulationArray = serde_json::from_str( reply.as_str() ).unwrap();
+    let received_simulation_summary = &received_json.simulations[0];
+    let expected_simulation_summary = SimulationSummary {
         simulation_id:   1,
+        model_id:        "1".to_string(),
         simulation_type: SimulationType::Powerflow,
-        domain:          DomainType::SP,
-        solver:          SolverType::NRP,
-        timestep:        1,
-        finaltime:       360
     };
-    assert_json_eq!(received_json, expected_json)
+    assert_json_eq!(received_simulation_summary, expected_simulation_summary)
 }
 
 #[test]

@@ -58,6 +58,9 @@ mod db {
     use redis::RedisResult;
     use crate::routes::{Simulation, SimulationType};
     use crate::routes::{DomainType, SolverType};
+    pub fn get_number_of_simulations() -> RedisResult<u64> {
+        Ok(10)
+    }
     pub fn get_new_simulation_id() -> RedisResult<u64> {
         Ok(1)
     }
@@ -78,18 +81,6 @@ mod db {
                timestep:        1,
                finaltime:       360
         })
-    }
-    pub fn write_u64(_key: &String, _value: u64) -> redis::RedisResult<()> {
-        Ok(())
-    }
-    pub fn read_u64(_key: &String) -> redis::RedisResult<u64> {
-        Ok(36)
-    }
-    pub fn write_string(_key: &String, _value: String) -> redis::RedisResult<()> {
-        Ok(())
-    }
-    pub fn read_string(_key: &String) -> redis::RedisResult<String> {
-        Ok("1".to_string())
     }
 }
 #[cfg(test)]
