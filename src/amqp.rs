@@ -34,7 +34,7 @@ pub async fn publish(bytes: Vec<u8>) -> Result<()> {
 
     let queue = channel_a
         .queue_declare(
-            "hello",
+            "dpsim-worker-queue",
             QueueDeclareOptions::default(),
             FieldTable::default(),
         ).await?;
@@ -44,7 +44,7 @@ pub async fn publish(bytes: Vec<u8>) -> Result<()> {
     let confirm = channel_a
         .basic_publish(
             "",
-            "hello",
+            "dpsim-worker-queue",
             BasicPublishOptions::default(),
             bytes,
             BasicProperties::default(),

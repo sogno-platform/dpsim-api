@@ -8,6 +8,11 @@ fn get_connection() -> redis::RedisResult<redis::Connection> {
     client.get_connection()
 }
 
+pub fn get_number_of_simulations() -> RedisResult<u64> {
+    let mut conn = get_connection()?;
+    conn.get("models")
+}
+
 #[doc = "Function for requesting a new Simulation id from the Redis DB"]
 pub fn get_new_simulation_id() -> RedisResult<u64> {
     let mut conn = get_connection()?;
@@ -51,28 +56,3 @@ pub fn read_simulation(key: u64) -> Result<Simulation, RedisError> {
             "Could not fetch item from Redis: ".into(), e.to_string()).into())
     }
 }
-
-#[doc = "Utility function for writing an int value to a key in a Redis DB"]
-pub fn write_u64(key: &String, value: u64) -> redis::RedisResult<()> {
-    let mut conn = get_connection()?;
-    conn.set(key, value)
-}
-
-#[doc = "Utility function for reading an int value from a key in a Redis DB"]
-pub fn read_u64(key: &String) -> redis::RedisResult<u64> {
-    let mut conn = get_connection()?;
-    conn.get(key)
-}
-
-#[doc = "Utility function for writing an int value to a key in a Redis DB"]
-pub fn write_string(key: &String, value: String) -> redis::RedisResult<()> {
-    let mut conn = get_connection()?;
-    conn.set(key, value)
-}
-
-#[doc = "Utility function for reading an int value from a key in a Redis DB"]
-pub fn read_string(key: &String) -> redis::RedisResult<String> {
-    let mut conn = get_connection()?;
-    conn.get(key)
-}
-
