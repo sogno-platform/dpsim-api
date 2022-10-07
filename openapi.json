@@ -68,6 +68,21 @@
         ],
         "type": "object"
       },
+      "SimulationArray": {
+        "description": "Struct for encapsulation Simulation details",
+        "properties": {
+          "simulations": {
+            "items": {
+              "$ref": "#/components/schemas/SimulationSummary"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "simulations"
+        ],
+        "type": "object"
+      },
       "SimulationForm": {
         "description": "## Parameters: * simulation_type - String - must be one of \"Powerflow\", \"Outage\" * load_profile_id - String - must be a valid id that exists in the associated sogno file service * model_id - String - must be a valid id that exists in the associated sogno file service",
         "properties": {
@@ -109,6 +124,27 @@
         "title": "Form for submitting a new Simulation",
         "type": "object"
       },
+      "SimulationSummary": {
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "simulation_id": {
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "simulation_type": {
+            "$ref": "#/components/schemas/SimulationType"
+          }
+        },
+        "required": [
+          "model_id",
+          "simulation_id",
+          "simulation_type"
+        ],
+        "type": "object"
+      },
       "SimulationType": {
         "description": "Enum for the various Simulation types",
         "enum": [
@@ -143,7 +179,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Simulation"
+                  "$ref": "#/components/schemas/SimulationArray"
                 }
               }
             },
