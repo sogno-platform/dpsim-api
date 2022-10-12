@@ -92,11 +92,21 @@ pub async fn request_simulation(_simulation: &AMQPSimulation) -> Result<()> {
         std::env::set_var("RUST_LOG", "info");
     }
 
+    let mut load_profile = json!("");
+
+    if _simulation.load_profile_url != "" {
+        load_profile = json!({
+            "type" : "url-list",
+            "url" : [ _simulation.load_profile_url ]
+        });
+    }
+
     let message_as_jsonvalue = json!({
       "model" : {
         "type" : "url-list",
         "url" : [ _simulation.model_url ]
       },
+      "load_profile" : load_profile,
       "parameters": {
         "domain":          _simulation.domain,
         "solver":          _simulation.solver,

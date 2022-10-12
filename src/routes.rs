@@ -16,6 +16,7 @@ use rocket::{Request};
 use schemars::JsonSchema;
 use crate::file_service;
 use http::uri::InvalidUri as InvalidUri;
+use log::info;
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema)]
 #[doc = "Struct for encapsulation Simulation details"]
@@ -392,7 +393,13 @@ create_endpoint_with_doc!(
                 let model_id         = &simulation.model_id;
                 let load_profile_id  = &simulation.load_profile_id;
                 let model_url        = file_service::convert_id_to_url(model_id).await?;
-                let load_profile_url = file_service::convert_id_to_url(load_profile_id).await?;
+                let mut load_profile_url = "".into();
+                let none_string: String = "None".into();
+                info!("load_profile_id: {}", load_profile_id);
+                if simulation.load_profile_id != none_string {
+                    info!("Converting {} to url", simulation.load_profile_id);
+                    load_profile_url = file_service::convert_id_to_url(load_profile_id).await?;
+                }
                 let amqp_sim         = AMQPSimulation::from_simulation(&simulation, model_url, load_profile_url);
                 match block_on(amqp::request_simulation(&amqp_sim)) {
                     Ok(()) => Ok(simulation),
