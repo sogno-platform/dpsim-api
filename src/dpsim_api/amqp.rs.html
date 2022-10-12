@@ -115,6 +115,16 @@
 <span id="115">115</span>
 <span id="116">116</span>
 <span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
 </pre><pre class="rust"><code><span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
 <span class="kw">use</span> <span class="ident">lapin</span>::{
     <span class="ident">options</span>::<span class="kw-2">*</span>, <span class="ident">publisher_confirm::Confirmation</span>, <span class="ident">types::FieldTable</span>, <span class="ident">BasicProperties</span>, <span class="ident">Connection</span>,
@@ -209,11 +219,21 @@
         <span class="ident">std::env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info&quot;</span>);
     }
 
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">load_profile</span> <span class="op">=</span> <span class="macro">json!</span>(<span class="string">&quot;&quot;</span>);
+
+    <span class="kw">if</span> <span class="ident">_simulation</span>.<span class="ident">load_profile_url</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;&quot;</span> {
+        <span class="ident">load_profile</span> <span class="op">=</span> <span class="macro">json!</span>({
+            <span class="string">&quot;type&quot;</span> : <span class="string">&quot;url-list&quot;</span>,
+            <span class="string">&quot;url&quot;</span> : [ <span class="ident">_simulation</span>.<span class="ident">load_profile_url</span> ]
+        });
+    }
+
     <span class="kw">let</span> <span class="ident">message_as_jsonvalue</span> <span class="op">=</span> <span class="macro">json!</span>({
       <span class="string">&quot;model&quot;</span> : {
         <span class="string">&quot;type&quot;</span> : <span class="string">&quot;url-list&quot;</span>,
         <span class="string">&quot;url&quot;</span> : [ <span class="ident">_simulation</span>.<span class="ident">model_url</span> ]
       },
+      <span class="string">&quot;load_profile&quot;</span> : <span class="ident">load_profile</span>,
       <span class="string">&quot;parameters&quot;</span>: {
         <span class="string">&quot;domain&quot;</span>:          <span class="ident">_simulation</span>.<span class="ident">domain</span>,
         <span class="string">&quot;solver&quot;</span>:          <span class="ident">_simulation</span>.<span class="ident">solver</span>,

@@ -172,7 +172,7 @@
   "paths": {
     "/simulation": {
       "get": {
-        "description": "List the simulations\n\n* Example request:\n\n``` curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation ```",
+        "description": "List the simulations",
         "operationId": "get_simulations",
         "responses": {
           "200": {
@@ -185,11 +185,10 @@
             },
             "description": ""
           }
-        },
-        "summary": "Get array of all simulations"
+        }
       },
       "post": {
-        "description": "Create a new simulation\n\n* Content-Type: application/json\n\n* Example request:\n\n```\n\ncurl -X POST -H 'Accept: application/json' -F file=@testdata/load_profile_data.zip -F model_id=\"theModel.zip\" -F allowed_file_types=application/zip hocalhost:8000/simulation ```",
+        "description": "Create a new simulation",
         "operationId": "post_simulation",
         "requestBody": {
           "content": {
@@ -212,13 +211,12 @@
             },
             "description": ""
           }
-        },
-        "summary": "Create a simulation"
+        }
       }
     },
     "/simulation/{id}": {
       "get": {
-        "description": "Show details for a simulation\n\n* Example request:\n\n``` curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation/1 ```",
+        "description": "Get the details for a simulation",
         "operationId": "get_simulation_id",
         "parameters": [
           {
@@ -243,8 +241,7 @@
             },
             "description": ""
           }
-        },
-        "summary": "Get a simulation using the ID"
+        }
       }
     }
   }
