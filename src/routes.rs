@@ -156,56 +156,6 @@ async fn parse_simulation_form(form: Json<SimulationForm>) -> Result<Json<Simula
     }
 }
 
-macro_rules! create_endpoint_with_doc{
-    (
-        #[describe($description:tt)]
-        #[example($wget:tt)]
-        #[summary($sum:tt)]
-        #[post($route_path:tt, format = $content_type:tt, data = "<form>")]
-        $(#[$attr:meta])*
-        pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
-            $body:block
-    ) => {
-        #[allow(rustdoc::invalid_rust_codeblocks)]
-        #[ doc = $sum]
-        #[ doc = $description ]
-        #[ doc = "\n\r * Content-Type: " ]
-        #[ doc = $content_type ]
-        #[ doc = "\n\r * Example request:\n\r" ]
-        #[ doc = "```" ]
-        #[ doc = $wget ]
-        #[ doc = "```" ]
-        #[openapi]
-        #[post($route_path, format = $content_type, data = "<form>")]
-        $( #[$attr] )*
-        pub async fn $name ( $($arg_name : $arg_ty),* ) $(-> $ret)?
-            $body
-    };
-    (
-        #[describe($description:tt)]
-        #[example($wget:tt)]
-        #[summary($sum:tt)]
-        #[$openapi:meta]
-        #[get($route_path:tt, format = $content_type:tt)]
-        $(#[$attr:meta])*
-        pub async fn $name:ident( $($arg_name:ident : $arg_ty:ty),* $(,)? ) $(-> $ret:ty)?
-            $body:block
-    ) => {
-        #[allow(rustdoc::invalid_rust_codeblocks)]
-        #[ doc = $sum]
-        #[ doc = $description ]
-        #[ doc = "\n\r * Example request:\n\r" ]
-        #[ doc = "```" ]
-        #[ doc = $wget ]
-        #[ doc = "```" ]
-        #[ $openapi ]
-        #[get($route_path, format = $content_type)]
-        $( #[$attr] )*
-        pub async fn $name ( $($arg_name : $arg_ty),* ) $(-> $ret)?
-            $body
-    }
-}
-
 #[derive(Debug, Default, serde::Serialize, schemars::JsonSchema)]
 pub struct SimulationError {
     pub err: String,
@@ -263,35 +213,31 @@ struct RoutesContext {
     routes: Vec<Route>
 }
 
-create_endpoint_with_doc!(
-    #[describe("List the endpoints")]
-    #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/api")]
-    #[summary("# SKIPPING OPENAPI GEN")]
-    #[openapi(skip)]
-    #[get("/api", format = "text/html")]
-    pub async fn get_api() -> Template {
-        let mut routes = [].to_vec();
-        for (index, fn_name) in get_routes().iter().enumerate() {
-            let heading_id  = format!("heading{}", index);
-            let collapse_id  = format!("collapse{}", index);
-            let name = match &fn_name.name {
-                Some(x) => x.to_string(),
-                None => "".to_string()
-            };
-            let route_json = Route {
-                collapse_id: collapse_id,
-                heading_id: heading_id,
-                link: document_link(&name),
-                method: fn_name.method.to_string(),
-                name: name,
-                path: fn_name.uri.path().to_string(),
-            };
-            routes.push(route_json);
-        }
-        let context = RoutesContext{ routes: routes };
-        Template::render("api", &context)
+#[doc = "List the endpoints"]
+#[openapi(skip)]
+#[get("/api", format = "text/html")]
+pub async fn get_api() -> Template {
+    let mut routes = [].to_vec();
+    for (index, fn_name) in get_routes().iter().enumerate() {
+        let heading_id  = format!("heading{}", index);
+        let collapse_id  = format!("collapse{}", index);
+        let name = match &fn_name.name {
+            Some(x) => x.to_string(),
+            None => "".to_string()
+        };
+        let route_json = Route {
+            collapse_id: collapse_id,
+            heading_id: heading_id,
+            link: document_link(&name),
+            method: fn_name.method.to_string(),
+            name: name,
+            path: fn_name.uri.path().to_string(),
+        };
+        routes.push(route_json);
     }
-);
+    let context = RoutesContext{ routes: routes };
+    Template::render("api", &context)
+}
 
 #[openapi(skip)]
 #[ doc = "Redirects to /api" ]
@@ -300,39 +246,35 @@ pub async fn get_root() -> Redirect {
     Redirect::to(uri!(get_api))
 }
 
-create_endpoint_with_doc!(
-    #[describe("Show details for a simulation")]
-    #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation/1")]
-    #[summary("# Get a simulation using the ID")]
-    #[openapi]
-    #[get("/simulation/<id>", format="application/json")]
-    pub async fn get_simulation_id(id: u64) -> SimulationResult {
-        match db::read_simulation(id) {
-            Ok(mut sim) => {
-                let uri: String = match file_service::convert_id_to_url(&sim.results_id).await {
-                    Ok(url) => url,
-                    Err(e) => return Err( SimulationError {
-                                              err: format!("Could not read convert results id to url. Results id:{} Error: {}", sim.results_id, e),
-                                              http_status_code: Status::Unauthorized
-                                          })
-                };
-                let data = file_service::get_data_from_url(&uri).await;
-                let results: String = match data {
-                    Ok(boxed_data) => {
-                        std::str::from_utf8(&boxed_data).unwrap().into()
-                    },
-                    Err(e) => return Err( SimulationError {
-                                              err: format!("Could not read results from url. Results id:{} Error: {}", sim.results_id, e),
-                                              http_status_code: Status::Unauthorized
-                                          })
-                };
-                sim.results_data = results;
-                Ok(Json(sim))
-            },
-            Err(e) =>  Err( SimulationError { err: e.to_string(), http_status_code: Status::UnprocessableEntity } )
-        }
+#[doc = "Get the details for a simulation"]
+#[openapi]
+#[get("/simulation/<id>", format="application/json")]
+pub async fn get_simulation_id(id: u64) -> SimulationResult {
+    match db::read_simulation(id) {
+        Ok(mut sim) => {
+            let uri: String = match file_service::convert_id_to_url(&sim.results_id).await {
+                Ok(url) => url,
+                Err(e) => return Err( SimulationError {
+                                          err: format!("Could not read convert results id to url. Results id:{} Error: {}", sim.results_id, e),
+                                          http_status_code: Status::Unauthorized
+                                      })
+            };
+            let data = file_service::get_data_from_url(&uri).await;
+            let results: String = match data {
+                Ok(boxed_data) => {
+                    std::str::from_utf8(&boxed_data).unwrap().into()
+                },
+                Err(e) => return Err( SimulationError {
+                                          err: format!("Could not read results from url. Results id:{} Error: {}", sim.results_id, e),
+                                          http_status_code: Status::Unauthorized
+                                      })
+            };
+            sim.results_data = results;
+            Ok(Json(sim))
+        },
+        Err(e) =>  Err( SimulationError { err: e.to_string(), http_status_code: Status::UnprocessableEntity } )
     }
-);
+}
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema)]
 #[doc = "Struct for encapsulation Simulation details"]
@@ -340,79 +282,66 @@ pub struct SimulationArray {
     pub simulations: Vec<SimulationSummary>
 }
 
-create_endpoint_with_doc!(
-    #[describe("List the simulations")]
-    #[example("curl -X GET -H 'Accept: application/json' http://localhost:8000/simulation")]
-    #[summary("# Get array of all simulations")]
-    #[openapi]
-    #[get("/simulation", format="application/json")]
-    pub async fn get_simulations() -> Result<Json<SimulationArray>, SimulationError> {
-        match db::get_number_of_simulations() {
-            Ok(number_of_simulations) => {
-                let mut simvec = Vec::new();
-                // "The range start..end contains all values with start <= x < end. It is empty if start >= end."
-                // from https://doc.rust-lang.org/std/ops/struct.Range.html
-                let last_plus_one = number_of_simulations+1;
-                for n in 1..last_plus_one {
-                    match db::read_simulation(n) {
-                        Ok(sim) => {
-                            let sim_summary = SimulationSummary {
-                                simulation_id:     sim.simulation_id,
-                                model_id:          sim.model_id,
-                                simulation_type:   sim.simulation_type,
-                            };
-                            simvec.push(sim_summary);
-                        }
-                        Err(e) => return Err( SimulationError { err: format!("Could not read simulation {} from redis DB: {}", n, e), http_status_code: Status::UnprocessableEntity} )
+#[doc = "List the simulations"]
+#[openapi]
+#[get("/simulation", format="application/json")]
+pub async fn get_simulations() -> Result<Json<SimulationArray>, SimulationError> {
+    match db::get_number_of_simulations() {
+        Ok(number_of_simulations) => {
+            let mut simvec = Vec::new();
+            // "The range start..end contains all values with start <= x < end. It is empty if start >= end."
+            // from https://doc.rust-lang.org/std/ops/struct.Range.html
+            let last_plus_one = number_of_simulations+1;
+            for n in 1..last_plus_one {
+                match db::read_simulation(n) {
+                    Ok(sim) => {
+                        let sim_summary = SimulationSummary {
+                            simulation_id:     sim.simulation_id,
+                            model_id:          sim.model_id,
+                            simulation_type:   sim.simulation_type,
+                        };
+                        simvec.push(sim_summary);
                     }
+                    Err(e) => return Err( SimulationError { err: format!("Could not read simulation {} from redis DB: {}", n, e), http_status_code: Status::UnprocessableEntity} )
                 }
-                let simarray = SimulationArray {
-                    simulations: simvec,
-                };
-                Ok(Json(simarray))
-            },
-            Err(e) => Err( SimulationError { err: format!("Could not read number of simulations from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
-        }
+            }
+            let simarray = SimulationArray {
+                simulations: simvec,
+            };
+            Ok(Json(simarray))
+        },
+        Err(e) => Err( SimulationError { err: format!("Could not read number of simulations from redis DB: {}", e), http_status_code: Status::UnprocessableEntity} )
     }
-);
+}
 
-create_endpoint_with_doc!(
-    #[describe("Create a new simulation")]
-    #[example("
-        curl -X POST
-             -H 'Accept: application/json'
-             -F file=@testdata/load_profile_data.zip
-             -F model_id=\"theModel.zip\"
-             -F allowed_file_types=application/zip hocalhost:8000/simulation"
-    )]
-    #[summary("# Create a simulation")]
-    #[post("/simulation", format = "application/json", data = "<form>")]
-    pub async fn post_simulation(form: Json<SimulationForm > ) -> SimulationResult {
-        match parse_simulation_form(form).await {
-            Ok(simulation) => {
-                let model_id         = &simulation.model_id;
-                let load_profile_id  = &simulation.load_profile_id;
-                let model_url        = file_service::convert_id_to_url(model_id).await?;
-                let mut load_profile_url = "".into();
-                let none_string: String = "None".into();
-                info!("load_profile_id: {}", load_profile_id);
-                if simulation.load_profile_id != none_string {
-                    info!("Converting {} to url", simulation.load_profile_id);
-                    load_profile_url = file_service::convert_id_to_url(load_profile_id).await?;
-                }
-                let amqp_sim         = AMQPSimulation::from_simulation(&simulation, model_url, load_profile_url);
-                match block_on(amqp::request_simulation(&amqp_sim)) {
-                    Ok(()) => Ok(simulation),
-                    Err(e) => Err(SimulationError {
-                        err: format!("Could not publish to amqp server: {}", e),
-                        http_status_code: Status::BadGateway
-                    })
-                }
-            },
-            Err(e) => Err(e)
-        }
+#[doc = "Create a new simulation"]
+#[openapi]
+#[post("/simulation", format = "application/json", data = "<form>")]
+pub async fn post_simulation(form: Json<SimulationForm > ) -> SimulationResult {
+    match parse_simulation_form(form).await {
+        Ok(simulation) => {
+            let model_id         = &simulation.model_id;
+            let load_profile_id  = &simulation.load_profile_id;
+            let model_url        = file_service::convert_id_to_url(model_id).await?;
+            let mut load_profile_url = "".into();
+            let none_string: String = "None".into();
+            info!("load_profile_id: {}", load_profile_id);
+            if simulation.load_profile_id != none_string {
+                info!("Converting {} to url", simulation.load_profile_id);
+                load_profile_url = file_service::convert_id_to_url(load_profile_id).await?;
+            }
+            let amqp_sim         = AMQPSimulation::from_simulation(&simulation, model_url, load_profile_url);
+            match block_on(amqp::request_simulation(&amqp_sim)) {
+                Ok(()) => Ok(simulation),
+                Err(e) => Err(SimulationError {
+                    err: format!("Could not publish to amqp server: {}", e),
+                    http_status_code: Status::BadGateway
+                })
+            }
+        },
+        Err(e) => Err(e)
     }
-);
+}
 
 #[doc = "Create a link to the documentation page for the given function"]
 fn document_link(fn_name: &str) -> String {
