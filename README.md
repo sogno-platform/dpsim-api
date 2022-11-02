@@ -1,9 +1,14 @@
 
 # Rest API for DPsim
 
-## This is a work in progress. A working prototype can be run using [the example deployments project](https://github.com/sogno-platform/example-deployments).
+### This is a work in progress. A working prototype can be run using
+[the example deployments project](https://github.com/sogno-platform/example-deployments).
 
-### Read [the documentation](https://sogno-platform.github.io/dpsim-api/dpsim_api/index.html)
+### Read [the api specification](http://sogno.energy/docs/api-specifications/simulator-api)
+
+### Architecture diagram
+
+![The architecture diagram should be here](images/architecture.svg)
 
 ### Start the rest service manually
 
