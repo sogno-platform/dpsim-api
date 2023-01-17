@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/main.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>main.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../dpsim_api/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../dpsim_api/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../dpsim_api/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/main.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>main.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../dpsim_api/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -85,92 +85,92 @@
 <span id="85">85</span>
 <span id="86">86</span>
 <span id="87">87</span>
-</pre><pre class="rust"><code><span class="doccomment">//!</span>
-<span class="doccomment">//! # DPSIM Service Rest API for controlling DPSim analyzer</span>
-<span class="doccomment">//! Author : Richard Marston &lt;rmarston@eonerc.rwth-aachen.de&gt;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## Table of endpoints</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! | Endpoint                    | Method | Description        | Implementation              | Parameters                      | Returns                |</span>
-<span class="doccomment">//! |-----------------------------|--------|--------------------|-----------------------------|---------------------------------|------------------------|</span>
-<span class="doccomment">//! | /simulation                 | POST   | Add a simulation   | [`post_simulation`][post_s] | [`SimulationForm`][s_f_s]       | [`Simulation`][sim]    |</span>
-<span class="doccomment">//! | /simulation                 | GET    | List simulations   | [`get_simulations`][get_s]  | None                            | [ [`Simulation`][sim] ]|</span>
-<span class="doccomment">//! | /simulation/ \[id]          | GET    | Simulation details | [`todo!`]                   | None                            | [`Simulation`][sim]    |</span>
-<span class="doccomment">//! | /simulation/ \[id] /results | GET    | Simulation results | [`todo!`]                   | None                            | plain text             |</span>
-<span class="doccomment">//! | /simulation/ \[id] /logs    | GET    | Simulation logs    | [`todo!`]                   | None                            | plain text             |</span>
-<span class="doccomment">//! | /debug                      | GET    | DPsim-api debug    | [`todo!`]                   | None                            | plain text             |</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! [post_s]: routes::post_simulation()</span>
-<span class="doccomment">//! [get_s]: routes::get_simulations()</span>
-<span class="doccomment">//! [s_f_s]: routes::SimulationForm</span>
-<span class="doccomment">//! [sim]: routes::Simulation</span>
+</pre><pre class="rust"><code><span class="doccomment">//!
+//! # DPSIM Service Rest API for controlling DPSim analyzer
+//! Author : Richard Marston &lt;rmarston@eonerc.rwth-aachen.de&gt;
+//!
+//! ## Table of endpoints
+//!
+//! | Endpoint                    | Method | Description        | Implementation              | Parameters                      | Returns                |
+//! |-----------------------------|--------|--------------------|-----------------------------|---------------------------------|------------------------|
+//! | /simulation                 | POST   | Add a simulation   | [`post_simulation`][post_s] | [`SimulationForm`][s_f_s]       | [`Simulation`][sim]    |
+//! | /simulation                 | GET    | List simulations   | [`get_simulations`][get_s]  | None                            | [ [`Simulation`][sim] ]|
+//! | /simulation/ \[id]          | GET    | Simulation details | [`todo!`]                   | None                            | [`Simulation`][sim]    |
+//! | /simulation/ \[id] /results | GET    | Simulation results | [`todo!`]                   | None                            | plain text             |
+//! | /simulation/ \[id] /logs    | GET    | Simulation logs    | [`todo!`]                   | None                            | plain text             |
+//! | /debug                      | GET    | DPsim-api debug    | [`todo!`]                   | None                            | plain text             |
+//!
+//! [post_s]: routes::post_simulation()
+//! [get_s]: routes::get_simulations()
+//! [s_f_s]: routes::SimulationForm
+//! [sim]: routes::Simulation
 
-<span class="comment">// stop rustdoc complaining that I&#39;m linking</span>
-<span class="comment">// to the routes module, which is privately</span>
-<span class="comment">// owned by this one (main.rs)</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">rustdoc::private_intra_doc_links</span>)]</span>
+</span><span class="comment">// stop rustdoc complaining that I&#39;m linking
+// to the routes module, which is privately
+// owned by this one (main.rs)
+</span><span class="attribute">#![allow(rustdoc::private_intra_doc_links)]
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rocket</span>;
+#[macro_use]
+</span><span class="kw">extern crate </span>rocket;
 
-<span class="kw">mod</span> <span class="ident">routes</span>;
-<span class="kw">mod</span> <span class="ident">file_service</span>;
-<span class="kw">mod</span> <span class="ident">amqp</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span> <span class="kw">mod</span> <span class="ident">db</span>;
-<span class="kw">use</span> <span class="ident">rocket_dyn_templates::Template</span>;
-<span class="kw">use</span> <span class="ident">rocket_okapi::swagger_ui</span>::{<span class="ident">make_swagger_ui</span>, <span class="ident">SwaggerUIConfig</span>};
+<span class="kw">mod </span>routes;
+<span class="kw">mod </span>file_service;
+<span class="kw">mod </span>amqp;
+<span class="attribute">#[cfg(not(test))] </span><span class="kw">mod </span>db;
+<span class="kw">use </span>rocket_dyn_templates::Template;
+<span class="kw">use </span>rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 
-<span class="kw">fn</span> <span class="ident">get_docs</span>() -&gt; <span class="ident">SwaggerUIConfig</span> {
-    <span class="ident">SwaggerUIConfig</span> {
-        <span class="ident">url</span>: <span class="string">&quot;/openapi.json&quot;</span>.<span class="ident">to_string</span>(),
-        ..<span class="ident">Default::default</span>()
+<span class="kw">fn </span>get_docs() -&gt; SwaggerUIConfig {
+    SwaggerUIConfig {
+        url: <span class="string">&quot;/openapi.json&quot;</span>.to_string(),
+        ..Default::default()
     }
 }
 
-<span class="attribute">#[<span class="ident">rocket::main</span>]</span>
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;The main entry point for Rocket&quot;</span> ]</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>() -&gt; <span class="prelude-ty">Result</span> <span class="op">&lt;</span>(), <span class="ident">rocket::Error</span><span class="op">&gt;</span> {
+<span class="attribute">#[rocket::main]
+#[doc = <span class="string">&quot;The main entry point for Rocket&quot; </span>]
+</span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result </span>&lt;(), rocket::Error&gt; {
 
-    <span class="ident">rocket::build</span>()
-        .<span class="ident">register</span>(<span class="string">&quot;/&quot;</span>, <span class="macro">catchers!</span>[<span class="ident">routes::incomplete_form</span>])
-        .<span class="ident">mount</span>(<span class="string">&quot;/&quot;</span>, <span class="ident">routes::get_routes</span>())
-        .<span class="ident">mount</span>(<span class="string">&quot;/swagger&quot;</span>, <span class="ident">make_swagger_ui</span>(<span class="kw-2">&amp;</span><span class="ident">get_docs</span>()))
-        .<span class="ident">attach</span>(<span class="ident">Template::fairing</span>())
-        .<span class="ident">launch</span>()
-        .<span class="kw">await</span>
-}
+    rocket::build()
+        .register(<span class="string">&quot;/&quot;</span>, <span class="macro">catchers!</span>[routes::incomplete_form])
+        .mount(<span class="string">&quot;/&quot;</span>, routes::get_routes())
+        .mount(<span class="string">&quot;/swagger&quot;</span>, make_swagger_ui(<span class="kw-2">&amp;</span>get_docs()))
+        .attach(Template::fairing())
+        .launch()
+        .<span class="kw">await
+</span>}
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">db</span> {
-    <span class="kw">use</span> <span class="ident">redis::RedisResult</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::routes</span>::{<span class="ident">Simulation</span>, <span class="ident">SimulationType</span>};
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::routes</span>::{<span class="ident">DomainType</span>, <span class="ident">SolverType</span>};
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_number_of_simulations</span>() -&gt; <span class="ident">RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>db {
+    <span class="kw">use </span>redis::RedisResult;
+    <span class="kw">use </span><span class="kw">crate</span>::routes::{Simulation, SimulationType};
+    <span class="kw">use </span><span class="kw">crate</span>::routes::{DomainType, SolverType};
+    <span class="kw">pub fn </span>get_number_of_simulations() -&gt; RedisResult&lt;u64&gt; {
         <span class="prelude-val">Ok</span>(<span class="number">10</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_new_simulation_id</span>() -&gt; <span class="ident">RedisResult</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
+    <span class="kw">pub fn </span>get_new_simulation_id() -&gt; RedisResult&lt;u64&gt; {
         <span class="prelude-val">Ok</span>(<span class="number">1</span>)
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_simulation</span>(<span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">_value</span>: <span class="kw-2">&amp;</span><span class="ident">Simulation</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub fn </span>write_simulation(_key: <span class="kw-2">&amp;</span>String, _value: <span class="kw-2">&amp;</span>Simulation) -&gt; redis::RedisResult&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_simulation</span>(<span class="ident">_key</span>: <span class="ident">u64</span>) -&gt; <span class="ident">redis::RedisResult</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">Simulation</span> {
-               <span class="ident">error</span>:           <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>(),
-               <span class="ident">load_profile_id</span>: <span class="string">&quot;&quot;</span>.<span class="ident">into</span>(),
-               <span class="ident">model_id</span>:        <span class="string">&quot;1&quot;</span>.<span class="ident">to_string</span>(),
-               <span class="ident">results_id</span>:      <span class="string">&quot;1&quot;</span>.<span class="ident">to_string</span>(),
-               <span class="ident">results_data</span>:    <span class="string">&quot;1&quot;</span>.<span class="ident">to_string</span>(),
-               <span class="ident">simulation_id</span>:   <span class="number">1</span>,
-               <span class="ident">simulation_type</span>: <span class="ident">SimulationType::Powerflow</span>,
-               <span class="ident">domain</span>:          <span class="ident">DomainType::SP</span>,
-               <span class="ident">solver</span>:          <span class="ident">SolverType::NRP</span>,
-               <span class="ident">timestep</span>:        <span class="number">1</span>,
-               <span class="ident">finaltime</span>:       <span class="number">360</span>
-        })
+    <span class="kw">pub fn </span>read_simulation(_key: u64) -&gt; redis::RedisResult&lt;Simulation&gt; {
+        <span class="prelude-val">Ok</span>(Simulation {
+               error:           <span class="string">&quot;&quot;</span>.to_owned(),
+               load_profile_id: <span class="string">&quot;&quot;</span>.into(),
+               model_id:        <span class="string">&quot;1&quot;</span>.to_string(),
+               results_id:      <span class="string">&quot;1&quot;</span>.to_string(),
+               results_data:    <span class="string">&quot;1&quot;</span>.to_string(),
+               simulation_id:   <span class="number">1</span>,
+               simulation_type: SimulationType::Powerflow,
+               domain:          DomainType::SP,
+               solver:          SolverType::NRP,
+               timestep:        <span class="number">1</span>,
+               finaltime:       <span class="number">360
+        </span>})
     }
 }
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="dpsim_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="dpsim_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/routes.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>routes.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../dpsim_api/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../dpsim_api/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../dpsim_api/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/routes.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>routes.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../dpsim_api/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -359,366 +359,366 @@
 <span id="359">359</span>
 <span id="360">360</span>
 <span id="361">361</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rocket::response</span>::{<span class="self">self</span>, <span class="ident">Redirect</span>, <span class="ident">Responder</span>, <span class="ident">Response</span>};
-<span class="kw">use</span> <span class="ident">rocket::serde::json</span>::{<span class="ident">Json</span>};
-<span class="kw">use</span> <span class="ident">async_global_executor::block_on</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::db</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::amqp</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::amqp::AMQPSimulation</span>;
-<span class="kw">use</span> <span class="ident">rocket_dyn_templates</span>::{<span class="ident">Template</span>};
-<span class="kw">use</span> <span class="ident">std</span>::{ <span class="ident">str</span>, <span class="ident">fmt</span> };
-<span class="kw">use</span> <span class="ident">rocket_okapi</span>::{ <span class="ident">openapi</span>, <span class="ident">OpenApiError</span>,
-                    <span class="ident">response::OpenApiResponderInner</span>,
-                    <span class="ident">gen::OpenApiGenerator</span> };
-<span class="kw">use</span> <span class="ident">okapi::openapi3::Responses</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{ <span class="ident">Serialize</span>, <span class="ident">Deserialize</span> };
-<span class="kw">use</span> <span class="ident">rocket::http</span>::{<span class="ident">ContentType</span>, <span class="ident">Status</span>};
-<span class="kw">use</span> <span class="ident">rocket</span>::{<span class="ident">Request</span>};
-<span class="kw">use</span> <span class="ident">schemars::JsonSchema</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::file_service</span>;
-<span class="kw">use</span> <span class="ident">http::uri::InvalidUri</span> <span class="kw">as</span> <span class="ident">InvalidUri</span>;
-<span class="kw">use</span> <span class="ident">log::info</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>rocket::response::{<span class="self">self</span>, Redirect, Responder, Response};
+<span class="kw">use </span>rocket::serde::json::{Json};
+<span class="kw">use </span>async_global_executor::block_on;
+<span class="kw">use </span><span class="kw">crate</span>::db;
+<span class="kw">use </span><span class="kw">crate</span>::amqp;
+<span class="kw">use </span><span class="kw">crate</span>::amqp::AMQPSimulation;
+<span class="kw">use </span>rocket_dyn_templates::{Template};
+<span class="kw">use </span>std::{ str, fmt };
+<span class="kw">use </span>rocket_okapi::{ openapi, OpenApiError,
+                    response::OpenApiResponderInner,
+                    gen::OpenApiGenerator };
+<span class="kw">use </span>okapi::openapi3::Responses;
+<span class="kw">use </span>serde::{ Serialize, Deserialize };
+<span class="kw">use </span>rocket::http::{ContentType, Status};
+<span class="kw">use </span>rocket::{Request};
+<span class="kw">use </span>schemars::JsonSchema;
+<span class="kw">use </span><span class="kw">crate</span>::file_service;
+<span class="kw">use </span>http::uri::InvalidUri <span class="kw">as </span>InvalidUri;
+<span class="kw">use </span>log::info;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">JsonSchema</span>)]</span>
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Struct for encapsulation Simulation details&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Simulation</span> {
-    <span class="kw">pub</span> <span class="ident">error</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">load_profile_id</span>:   <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">model_id</span>:          <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">results_id</span>:        <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">results_data</span>:      <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">simulation_id</span>:     <span class="ident">u64</span>,
-    <span class="kw">pub</span> <span class="ident">simulation_type</span>:   <span class="ident">SimulationType</span>,
-    <span class="kw">pub</span> <span class="ident">domain</span>:            <span class="ident">DomainType</span>,
-    <span class="kw">pub</span> <span class="ident">solver</span>:            <span class="ident">SolverType</span>,
-    <span class="kw">pub</span> <span class="ident">timestep</span>:          <span class="ident">u64</span>,
-    <span class="kw">pub</span> <span class="ident">finaltime</span>:         <span class="ident">u64</span>
+<span class="attribute">#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = <span class="string">&quot;Struct for encapsulation Simulation details&quot;</span>]
+</span><span class="kw">pub struct </span>Simulation {
+    <span class="kw">pub </span>error: String,
+    <span class="kw">pub </span>load_profile_id:   String,
+    <span class="kw">pub </span>model_id:          String,
+    <span class="kw">pub </span>results_id:        String,
+    <span class="kw">pub </span>results_data:      String,
+    <span class="kw">pub </span>simulation_id:     u64,
+    <span class="kw">pub </span>simulation_type:   SimulationType,
+    <span class="kw">pub </span>domain:            DomainType,
+    <span class="kw">pub </span>solver:            SolverType,
+    <span class="kw">pub </span>timestep:          u64,
+    <span class="kw">pub </span>finaltime:         u64
 }
 
-<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">Simulation</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;({}, {}, {})&quot;</span>, <span class="self">self</span>.<span class="ident">simulation_id</span>, <span class="self">self</span>.<span class="ident">simulation_type</span>, <span class="self">self</span>.<span class="ident">model_id</span>)
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>Simulation {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;({}, {}, {})&quot;</span>, <span class="self">self</span>.simulation_id, <span class="self">self</span>.simulation_type, <span class="self">self</span>.model_id)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">SimulationSummary</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;({}, {}, {})&quot;</span>, <span class="self">self</span>.<span class="ident">simulation_id</span>, <span class="self">self</span>.<span class="ident">simulation_type</span>, <span class="self">self</span>.<span class="ident">model_id</span>)
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>SimulationSummary {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;({}, {}, {})&quot;</span>, <span class="self">self</span>.simulation_id, <span class="self">self</span>.simulation_type, <span class="self">self</span>.model_id)
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">JsonSchema</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimulationSummary</span> {
-    <span class="kw">pub</span> <span class="ident">simulation_id</span>:     <span class="ident">u64</span>,
-    <span class="kw">pub</span> <span class="ident">model_id</span>:          <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">simulation_type</span>:   <span class="ident">SimulationType</span>,
+<span class="attribute">#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+</span><span class="kw">pub struct </span>SimulationSummary {
+    <span class="kw">pub </span>simulation_id:     u64,
+    <span class="kw">pub </span>model_id:          String,
+    <span class="kw">pub </span>simulation_type:   SimulationType,
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Enum for the various Simulation types&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">JsonSchema</span>, <span class="ident">FromFormField</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SimulationType</span> {
-    <span class="ident">Powerflow</span>,
-    <span class="ident">Outage</span>
+<span class="attribute">#[doc = <span class="string">&quot;Enum for the various Simulation types&quot;</span>]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+</span><span class="kw">pub enum </span>SimulationType {
+    Powerflow,
+    Outage
 }
 
-<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">SimulationType</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>)
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>SimulationType {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; fmt::Result {
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>)
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Enum for the various Simulation types&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">JsonSchema</span>, <span class="ident">FromFormField</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DomainType</span> {
-    <span class="ident">SP</span>,
-    <span class="ident">DP</span>,
-    <span class="ident">EMT</span>
+<span class="attribute">#[doc = <span class="string">&quot;Enum for the various Simulation types&quot;</span>]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+</span><span class="kw">pub enum </span>DomainType {
+    SP,
+    DP,
+    EMT
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Enum for the various Solver types&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">JsonSchema</span>, <span class="ident">FromFormField</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SolverType</span> {
-    <span class="ident">MNA</span>,
-    <span class="ident">DAE</span>,
-    <span class="ident">NRP</span>
+<span class="attribute">#[doc = <span class="string">&quot;Enum for the various Solver types&quot;</span>]
+#[derive(JsonSchema, FromFormField, Serialize, Deserialize, Debug, Copy, Clone)]
+</span><span class="kw">pub enum </span>SolverType {
+    MNA,
+    DAE,
+    NRP
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">SimulationType</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">SimulationType::Powerflow</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>SimulationType {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        SimulationType::Powerflow
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;String conversion for the various Simulation types&quot;</span>]</span>
-<span class="kw">impl</span> <span class="ident">SimulationType</span> {
-    <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">SimulationType::Powerflow</span> =&gt; <span class="string">&quot;Powerflow&quot;</span>.<span class="ident">to_owned</span>(),
-            <span class="ident">SimulationType::Outage</span>    =&gt; <span class="string">&quot;Outage&quot;</span>.<span class="ident">to_owned</span>()
+<span class="attribute">#[doc = <span class="string">&quot;String conversion for the various Simulation types&quot;</span>]
+</span><span class="kw">impl </span>SimulationType {
+    <span class="kw">fn </span>to_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="kw">match </span><span class="kw-2">&amp;*</span><span class="self">self </span>{
+            SimulationType::Powerflow =&gt; <span class="string">&quot;Powerflow&quot;</span>.to_owned(),
+            SimulationType::Outage    =&gt; <span class="string">&quot;Outage&quot;</span>.to_owned()
         }
     }
 }
 
-<span class="doccomment">/// # Form for submitting a new Simulation</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ## Parameters:</span>
-<span class="doccomment">/// * simulation_type</span>
-<span class="doccomment">///   - String</span>
-<span class="doccomment">///   - must be one of &quot;Powerflow&quot;, &quot;Outage&quot;</span>
-<span class="doccomment">/// * load_profile_id</span>
-<span class="doccomment">///   - String</span>
-<span class="doccomment">///   - must be a valid id that exists in the associated sogno file service</span>
-<span class="doccomment">/// * model_id</span>
-<span class="doccomment">///   - String</span>
-<span class="doccomment">///   - must be a valid id that exists in the associated sogno file service</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">FromForm</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">JsonSchema</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimulationForm</span> {
-    <span class="kw">pub</span> <span class="ident">simulation_type</span>:   <span class="ident">SimulationType</span>,
-    <span class="kw">pub</span> <span class="ident">model_id</span>:          <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">load_profile_id</span>:   <span class="ident">String</span>,
-    <span class="attribute">#[<span class="ident">field</span>(<span class="ident">default</span> <span class="op">=</span> <span class="ident">DomainType::SP</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">domain</span>:            <span class="ident">DomainType</span>,
-    <span class="attribute">#[<span class="ident">field</span>(<span class="ident">default</span> <span class="op">=</span> <span class="ident">SolverType::NRP</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">solver</span>:            <span class="ident">SolverType</span>,
-    <span class="attribute">#[<span class="ident">field</span>(<span class="ident">default</span> <span class="op">=</span> <span class="number">1</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">timestep</span>:          <span class="ident">u64</span>,
-    <span class="attribute">#[<span class="ident">field</span>(<span class="ident">default</span> <span class="op">=</span> <span class="number">30</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">finaltime</span>:         <span class="ident">u64</span>
+<span class="doccomment">/// # Form for submitting a new Simulation
+///
+/// ## Parameters:
+/// * simulation_type
+///   - String
+///   - must be one of &quot;Powerflow&quot;, &quot;Outage&quot;
+/// * load_profile_id
+///   - String
+///   - must be a valid id that exists in the associated sogno file service
+/// * model_id
+///   - String
+///   - must be a valid id that exists in the associated sogno file service
+</span><span class="attribute">#[derive(FromForm, Debug, Serialize, Deserialize, JsonSchema)]
+</span><span class="kw">pub struct </span>SimulationForm {
+    <span class="kw">pub </span>simulation_type:   SimulationType,
+    <span class="kw">pub </span>model_id:          String,
+    <span class="kw">pub </span>load_profile_id:   String,
+    <span class="attribute">#[field(default = DomainType::SP)]
+    </span><span class="kw">pub </span>domain:            DomainType,
+    <span class="attribute">#[field(default = SolverType::NRP)]
+    </span><span class="kw">pub </span>solver:            SolverType,
+    <span class="attribute">#[field(default = <span class="number">1</span>)]
+    </span><span class="kw">pub </span>timestep:          u64,
+    <span class="attribute">#[field(default = <span class="number">30</span>)]
+    </span><span class="kw">pub </span>finaltime:         u64
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">parse_simulation_form</span>(<span class="ident">form</span>: <span class="ident">Json</span><span class="op">&lt;</span><span class="ident">SimulationForm</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Json</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span>, <span class="ident">SimulationError</span><span class="op">&gt;</span>{
-    <span class="kw">let</span> <span class="ident">simulation_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">db::get_new_simulation_id</span>() {
-        <span class="prelude-val">Ok</span>(<span class="ident">id</span>) =&gt; <span class="ident">id</span>,
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SimulationError</span> {
-                             <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Failed to obtain new simulation id: {}&quot;</span>, <span class="ident">e</span>),
-                             <span class="ident">http_status_code</span>: <span class="ident">Status::BadGateway</span>
+<span class="kw">async fn </span>parse_simulation_form(form: Json&lt;SimulationForm&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Json&lt;Simulation&gt;, SimulationError&gt;{
+    <span class="kw">let </span>simulation_id = <span class="kw">match </span>db::get_new_simulation_id() {
+        <span class="prelude-val">Ok</span>(id) =&gt; id,
+        <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(SimulationError {
+                             err: <span class="macro">format!</span>(<span class="string">&quot;Failed to obtain new simulation id: {}&quot;</span>, e),
+                             http_status_code: Status::BadGateway
                          })
     };
-    <span class="kw">let</span> <span class="ident">results_file</span>     <span class="op">=</span> <span class="ident">file_service::create_results_file</span>().<span class="kw">await</span><span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">simulation</span> <span class="op">=</span> <span class="ident">Simulation</span> {
-        <span class="ident">error</span>:           <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">load_profile_id</span>: <span class="ident">form</span>.<span class="ident">load_profile_id</span>.<span class="ident">clone</span>(),
-        <span class="ident">model_id</span>:        <span class="ident">form</span>.<span class="ident">model_id</span>.<span class="ident">clone</span>(),
-        <span class="ident">results_id</span>:      <span class="ident">results_file</span>,
-        <span class="ident">results_data</span>:    <span class="string">&quot;&quot;</span>.<span class="ident">into</span>(),
-        <span class="ident">simulation_id</span>:   <span class="ident">simulation_id</span>,
-        <span class="ident">simulation_type</span>: <span class="ident">form</span>.<span class="ident">simulation_type</span>,
-        <span class="ident">domain</span>:          <span class="ident">form</span>.<span class="ident">domain</span>,
-        <span class="ident">solver</span>:          <span class="ident">form</span>.<span class="ident">solver</span>,
-        <span class="ident">timestep</span>:        <span class="ident">form</span>.<span class="ident">timestep</span>,
-        <span class="ident">finaltime</span>:       <span class="ident">form</span>.<span class="ident">finaltime</span>
+    <span class="kw">let </span>results_file     = file_service::create_results_file().<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let </span>simulation = Simulation {
+        error:           <span class="string">&quot;&quot;</span>.to_string(),
+        load_profile_id: form.load_profile_id.clone(),
+        model_id:        form.model_id.clone(),
+        results_id:      results_file,
+        results_data:    <span class="string">&quot;&quot;</span>.into(),
+        simulation_id:   simulation_id,
+        simulation_type: form.simulation_type,
+        domain:          form.domain,
+        solver:          form.solver,
+        timestep:        form.timestep,
+        finaltime:       form.finaltime
     };
-    <span class="kw">match</span> <span class="ident">db::write_simulation</span>(<span class="kw-2">&amp;</span><span class="ident">simulation_id</span>.<span class="ident">to_string</span>(), <span class="kw-2">&amp;</span><span class="ident">simulation</span>) {
-        <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Json</span>(<span class="ident">simulation</span>)),
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">SimulationError</span> {
-                      <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not write to db: {}&quot;</span>, <span class="ident">e</span>.<span class="ident">to_string</span>()),
-                      <span class="ident">http_status_code</span>: <span class="ident">Status::BadGateway</span>
+    <span class="kw">match </span>db::write_simulation(<span class="kw-2">&amp;</span>simulation_id.to_string(), <span class="kw-2">&amp;</span>simulation) {
+        <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(Json(simulation)),
+        <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(SimulationError {
+                      err: <span class="macro">format!</span>(<span class="string">&quot;Could not write to db: {}&quot;</span>, e.to_string()),
+                      http_status_code: Status::BadGateway
                   })
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">serde::Serialize</span>, <span class="ident">schemars::JsonSchema</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimulationError</span> {
-    <span class="kw">pub</span> <span class="ident">err</span>: <span class="ident">String</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">http_status_code</span>: <span class="ident">rocket::http::Status</span>,
+<span class="attribute">#[derive(Debug, Default, serde::Serialize, schemars::JsonSchema)]
+</span><span class="kw">pub struct </span>SimulationError {
+    <span class="kw">pub </span>err: String,
+    <span class="attribute">#[serde(skip)]
+    </span><span class="kw">pub </span>http_status_code: rocket::http::Status,
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">hyper::Error</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SimulationError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">input</span>: <span class="ident">hyper::Error</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">return</span> <span class="ident">SimulationError</span> { <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Error converting url: {}&quot;</span>, <span class="ident">input</span>), <span class="ident">http_status_code</span>: <span class="ident">rocket::http::Status</span>{ <span class="ident">code</span>: <span class="number">500</span> } }
+<span class="kw">impl </span>From&lt;hyper::Error&gt; <span class="kw">for </span>SimulationError {
+    <span class="kw">fn </span>from(input: hyper::Error) -&gt; <span class="self">Self </span>{
+        <span class="kw">return </span>SimulationError { err: <span class="macro">format!</span>(<span class="string">&quot;Error converting url: {}&quot;</span>, input), http_status_code: rocket::http::Status{ code: <span class="number">500 </span>} }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">InvalidUri</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SimulationError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">input</span>: <span class="ident">InvalidUri</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">return</span> <span class="ident">SimulationError</span> { <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Error converting uri: {}&quot;</span>, <span class="ident">input</span>), <span class="ident">http_status_code</span>: <span class="ident">rocket::http::Status</span>{ <span class="ident">code</span>: <span class="number">500</span> } }
+<span class="kw">impl </span>From&lt;InvalidUri&gt; <span class="kw">for </span>SimulationError {
+    <span class="kw">fn </span>from(input: InvalidUri) -&gt; <span class="self">Self </span>{
+        <span class="kw">return </span>SimulationError { err: <span class="macro">format!</span>(<span class="string">&quot;Error converting uri: {}&quot;</span>, input), http_status_code: rocket::http::Status{ code: <span class="number">500 </span>} }
     }
 }
 
-<span class="kw">type</span> <span class="ident">SimulationResult</span> <span class="op">=</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">Json</span><span class="op">&lt;</span><span class="ident">Simulation</span><span class="op">&gt;</span>, <span class="ident">SimulationError</span><span class="op">&gt;</span>;
+<span class="kw">type </span>SimulationResult = std::result::Result&lt;Json&lt;Simulation&gt;, SimulationError&gt;;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> <span class="ident">Responder</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span>, <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SimulationError</span> {
-    <span class="kw">fn</span> <span class="ident">respond_to</span>(<span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">Request</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">response::Result</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
-        <span class="comment">// Convert object to json</span>
-        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">body</span>.<span class="ident">len</span>();
-        <span class="ident">Response::build</span>()
-            .<span class="ident">sized_body</span>(<span class="ident">len</span>, <span class="ident">std::io::Cursor::new</span>(<span class="ident">body</span>))
-            .<span class="ident">header</span>(<span class="ident">ContentType::JSON</span>)
-            .<span class="ident">status</span>(<span class="self">self</span>.<span class="ident">http_status_code</span>)
-            .<span class="ident">ok</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;r</span>&gt; Responder&lt;<span class="lifetime">&#39;r</span>, <span class="lifetime">&#39;static</span>&gt; <span class="kw">for </span>SimulationError {
+    <span class="kw">fn </span>respond_to(<span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;r </span>Request&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; response::Result&lt;<span class="lifetime">&#39;static</span>&gt; {
+        <span class="comment">// Convert object to json
+        </span><span class="kw">let </span>body = serde_json::to_string(<span class="kw-2">&amp;</span><span class="self">self</span>).unwrap();
+        <span class="kw">let </span>len = body.len();
+        Response::build()
+            .sized_body(len, std::io::Cursor::new(body))
+            .header(ContentType::JSON)
+            .status(<span class="self">self</span>.http_status_code)
+            .ok()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">OpenApiResponderInner</span> <span class="kw">for</span> <span class="ident">SimulationError</span> {
-    <span class="kw">fn</span> <span class="ident">responses</span>(<span class="ident">_gen</span>: <span class="kw-2">&amp;mut</span> <span class="ident">OpenApiGenerator</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Responses</span>, <span class="ident">OpenApiError</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">Responses::default</span>())
+<span class="kw">impl </span>OpenApiResponderInner <span class="kw">for </span>SimulationError {
+    <span class="kw">fn </span>responses(_gen: <span class="kw-2">&amp;mut </span>OpenApiGenerator) -&gt; <span class="prelude-ty">Result</span>&lt;Responses, OpenApiError&gt; {
+        <span class="prelude-val">Ok</span>(Responses::default())
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;A struct used for sharing info about a route with a template&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Route</span> {
-    <span class="ident">collapse_id</span>: <span class="ident">String</span>,
-    <span class="ident">heading_id</span>: <span class="ident">String</span>,
-    <span class="ident">link</span>: <span class="ident">String</span>,
-    <span class="ident">method</span>: <span class="ident">String</span>,
-    <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="ident">path</span>: <span class="ident">String</span>
+<span class="attribute">#[doc = <span class="string">&quot;A struct used for sharing info about a route with a template&quot;</span>]
+#[derive(Serialize, Clone)]
+</span><span class="kw">struct </span>Route {
+    collapse_id: String,
+    heading_id: String,
+    link: String,
+    method: String,
+    name: String,
+    path: String
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;A struct used for sharing info about some routes with a template&quot;</span>]</span>
-<span class="kw">struct</span> <span class="ident">RoutesContext</span> {
-    <span class="ident">routes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Route</span><span class="op">&gt;</span>
+<span class="attribute">#[derive(Serialize)]
+#[doc = <span class="string">&quot;A struct used for sharing info about some routes with a template&quot;</span>]
+</span><span class="kw">struct </span>RoutesContext {
+    routes: Vec&lt;Route&gt;
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;List the endpoints&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">openapi</span>(<span class="ident">skip</span>)]</span>
-<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/api&quot;</span>, <span class="ident">format</span> <span class="op">=</span> <span class="string">&quot;text/html&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_api</span>() -&gt; <span class="ident">Template</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">routes</span> <span class="op">=</span> [].<span class="ident">to_vec</span>();
-    <span class="kw">for</span> (<span class="ident">index</span>, <span class="ident">fn_name</span>) <span class="kw">in</span> <span class="ident">get_routes</span>().<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-        <span class="kw">let</span> <span class="ident">heading_id</span>  <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;heading{}&quot;</span>, <span class="ident">index</span>);
-        <span class="kw">let</span> <span class="ident">collapse_id</span>  <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;collapse{}&quot;</span>, <span class="ident">index</span>);
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">fn_name</span>.<span class="ident">name</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">x</span>) =&gt; <span class="ident">x</span>.<span class="ident">to_string</span>(),
-            <span class="prelude-val">None</span> =&gt; <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()
+<span class="attribute">#[doc = <span class="string">&quot;List the endpoints&quot;</span>]
+#[openapi(skip)]
+#[get(<span class="string">&quot;/api&quot;</span>, format = <span class="string">&quot;text/html&quot;</span>)]
+</span><span class="kw">pub async fn </span>get_api() -&gt; Template {
+    <span class="kw">let </span><span class="kw-2">mut </span>routes = [].to_vec();
+    <span class="kw">for </span>(index, fn_name) <span class="kw">in </span>get_routes().iter().enumerate() {
+        <span class="kw">let </span>heading_id  = <span class="macro">format!</span>(<span class="string">&quot;heading{}&quot;</span>, index);
+        <span class="kw">let </span>collapse_id  = <span class="macro">format!</span>(<span class="string">&quot;collapse{}&quot;</span>, index);
+        <span class="kw">let </span>name = <span class="kw">match </span><span class="kw-2">&amp;</span>fn_name.name {
+            <span class="prelude-val">Some</span>(x) =&gt; x.to_string(),
+            <span class="prelude-val">None </span>=&gt; <span class="string">&quot;&quot;</span>.to_string()
         };
-        <span class="kw">let</span> <span class="ident">route_json</span> <span class="op">=</span> <span class="ident">Route</span> {
-            <span class="ident">collapse_id</span>: <span class="ident">collapse_id</span>,
-            <span class="ident">heading_id</span>: <span class="ident">heading_id</span>,
-            <span class="ident">link</span>: <span class="ident">document_link</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>),
-            <span class="ident">method</span>: <span class="ident">fn_name</span>.<span class="ident">method</span>.<span class="ident">to_string</span>(),
-            <span class="ident">name</span>: <span class="ident">name</span>,
-            <span class="ident">path</span>: <span class="ident">fn_name</span>.<span class="ident">uri</span>.<span class="ident">path</span>().<span class="ident">to_string</span>(),
+        <span class="kw">let </span>route_json = Route {
+            collapse_id: collapse_id,
+            heading_id: heading_id,
+            link: document_link(<span class="kw-2">&amp;</span>name),
+            method: fn_name.method.to_string(),
+            name: name,
+            path: fn_name.uri.path().to_string(),
         };
-        <span class="ident">routes</span>.<span class="ident">push</span>(<span class="ident">route_json</span>);
+        routes.push(route_json);
     }
-    <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">RoutesContext</span>{ <span class="ident">routes</span>: <span class="ident">routes</span> };
-    <span class="ident">Template::render</span>(<span class="string">&quot;api&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">context</span>)
+    <span class="kw">let </span>context = RoutesContext{ routes: routes };
+    Template::render(<span class="string">&quot;api&quot;</span>, <span class="kw-2">&amp;</span>context)
 }
 
-<span class="attribute">#[<span class="ident">openapi</span>(<span class="ident">skip</span>)]</span>
-<span class="attribute">#[ <span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Redirects to /api&quot;</span> ]</span>
-<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>, <span class="ident">format</span> <span class="op">=</span> <span class="string">&quot;text/html&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_root</span>() -&gt; <span class="ident">Redirect</span> {
-    <span class="ident">Redirect::to</span>(<span class="macro">uri!</span>(<span class="ident">get_api</span>))
+<span class="attribute">#[openapi(skip)]
+#[ doc = <span class="string">&quot;Redirects to /api&quot; </span>]
+#[get(<span class="string">&quot;/&quot;</span>, format = <span class="string">&quot;text/html&quot;</span>)]
+</span><span class="kw">pub async fn </span>get_root() -&gt; Redirect {
+    Redirect::to(<span class="macro">uri!</span>(get_api))
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Get the details for a simulation&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">openapi</span>]</span>
-<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/simulation/&lt;id&gt;&quot;</span>, <span class="ident">format</span><span class="op">=</span><span class="string">&quot;application/json&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_simulation_id</span>(<span class="ident">id</span>: <span class="ident">u64</span>) -&gt; <span class="ident">SimulationResult</span> {
-    <span class="kw">match</span> <span class="ident">db::read_simulation</span>(<span class="ident">id</span>) {
-        <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">sim</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">uri</span>: <span class="ident">String</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">file_service::convert_id_to_url</span>(<span class="kw-2">&amp;</span><span class="ident">sim</span>.<span class="ident">results_id</span>).<span class="kw">await</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">url</span>) =&gt; <span class="ident">url</span>,
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>( <span class="ident">SimulationError</span> {
-                                          <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not read convert results id to url. Results id:{} Error: {}&quot;</span>, <span class="ident">sim</span>.<span class="ident">results_id</span>, <span class="ident">e</span>),
-                                          <span class="ident">http_status_code</span>: <span class="ident">Status::Unauthorized</span>
+<span class="attribute">#[doc = <span class="string">&quot;Get the details for a simulation&quot;</span>]
+#[openapi]
+#[get(<span class="string">&quot;/simulation/&lt;id&gt;&quot;</span>, format=<span class="string">&quot;application/json&quot;</span>)]
+</span><span class="kw">pub async fn </span>get_simulation_id(id: u64) -&gt; SimulationResult {
+    <span class="kw">match </span>db::read_simulation(id) {
+        <span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>sim) =&gt; {
+            <span class="kw">let </span>uri: String = <span class="kw">match </span>file_service::convert_id_to_url(<span class="kw-2">&amp;</span>sim.results_id).<span class="kw">await </span>{
+                <span class="prelude-val">Ok</span>(url) =&gt; url,
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>( SimulationError {
+                                          err: <span class="macro">format!</span>(<span class="string">&quot;Could not read convert results id to url. Results id:{} Error: {}&quot;</span>, sim.results_id, e),
+                                          http_status_code: Status::Unauthorized
                                       })
             };
-            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">file_service::get_data_from_url</span>(<span class="kw-2">&amp;</span><span class="ident">uri</span>).<span class="kw">await</span>;
-            <span class="kw">let</span> <span class="ident">results</span>: <span class="ident">String</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">data</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">boxed_data</span>) =&gt; {
-                    <span class="ident">std::str::from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">boxed_data</span>).<span class="ident">unwrap</span>().<span class="ident">into</span>()
+            <span class="kw">let </span>data = file_service::get_data_from_url(<span class="kw-2">&amp;</span>uri).<span class="kw">await</span>;
+            <span class="kw">let </span>results: String = <span class="kw">match </span>data {
+                <span class="prelude-val">Ok</span>(boxed_data) =&gt; {
+                    std::str::from_utf8(<span class="kw-2">&amp;</span>boxed_data).unwrap().into()
                 },
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>( <span class="ident">SimulationError</span> {
-                                          <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not read results from url. Results id:{} Error: {}&quot;</span>, <span class="ident">sim</span>.<span class="ident">results_id</span>, <span class="ident">e</span>),
-                                          <span class="ident">http_status_code</span>: <span class="ident">Status::Unauthorized</span>
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>( SimulationError {
+                                          err: <span class="macro">format!</span>(<span class="string">&quot;Could not read results from url. Results id:{} Error: {}&quot;</span>, sim.results_id, e),
+                                          http_status_code: Status::Unauthorized
                                       })
             };
-            <span class="ident">sim</span>.<span class="ident">results_data</span> <span class="op">=</span> <span class="ident">results</span>;
-            <span class="prelude-val">Ok</span>(<span class="ident">Json</span>(<span class="ident">sim</span>))
+            sim.results_data = results;
+            <span class="prelude-val">Ok</span>(Json(sim))
         },
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt;  <span class="prelude-val">Err</span>( <span class="ident">SimulationError</span> { <span class="ident">err</span>: <span class="ident">e</span>.<span class="ident">to_string</span>(), <span class="ident">http_status_code</span>: <span class="ident">Status::UnprocessableEntity</span> } )
+        <span class="prelude-val">Err</span>(e) =&gt;  <span class="prelude-val">Err</span>( SimulationError { err: e.to_string(), http_status_code: Status::UnprocessableEntity } )
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">JsonSchema</span>)]</span>
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Struct for encapsulation Simulation details&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimulationArray</span> {
-    <span class="kw">pub</span> <span class="ident">simulations</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SimulationSummary</span><span class="op">&gt;</span>
+<span class="attribute">#[derive(Debug, Serialize, Deserialize, JsonSchema)]
+#[doc = <span class="string">&quot;Struct for encapsulation Simulation details&quot;</span>]
+</span><span class="kw">pub struct </span>SimulationArray {
+    <span class="kw">pub </span>simulations: Vec&lt;SimulationSummary&gt;
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;List the simulations&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">openapi</span>]</span>
-<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/simulation&quot;</span>, <span class="ident">format</span><span class="op">=</span><span class="string">&quot;application/json&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_simulations</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Json</span><span class="op">&lt;</span><span class="ident">SimulationArray</span><span class="op">&gt;</span>, <span class="ident">SimulationError</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">db::get_number_of_simulations</span>() {
-        <span class="prelude-val">Ok</span>(<span class="ident">number_of_simulations</span>) =&gt; {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">simvec</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-            <span class="comment">// &quot;The range start..end contains all values with start &lt;= x &lt; end. It is empty if start &gt;= end.&quot;</span>
-            <span class="comment">// from https://doc.rust-lang.org/std/ops/struct.Range.html</span>
-            <span class="kw">let</span> <span class="ident">last_plus_one</span> <span class="op">=</span> <span class="ident">number_of_simulations</span><span class="op">+</span><span class="number">1</span>;
-            <span class="kw">for</span> <span class="ident">n</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">last_plus_one</span> {
-                <span class="kw">match</span> <span class="ident">db::read_simulation</span>(<span class="ident">n</span>) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">sim</span>) =&gt; {
-                        <span class="kw">let</span> <span class="ident">sim_summary</span> <span class="op">=</span> <span class="ident">SimulationSummary</span> {
-                            <span class="ident">simulation_id</span>:     <span class="ident">sim</span>.<span class="ident">simulation_id</span>,
-                            <span class="ident">model_id</span>:          <span class="ident">sim</span>.<span class="ident">model_id</span>,
-                            <span class="ident">simulation_type</span>:   <span class="ident">sim</span>.<span class="ident">simulation_type</span>,
+<span class="attribute">#[doc = <span class="string">&quot;List the simulations&quot;</span>]
+#[openapi]
+#[get(<span class="string">&quot;/simulation&quot;</span>, format=<span class="string">&quot;application/json&quot;</span>)]
+</span><span class="kw">pub async fn </span>get_simulations() -&gt; <span class="prelude-ty">Result</span>&lt;Json&lt;SimulationArray&gt;, SimulationError&gt; {
+    <span class="kw">match </span>db::get_number_of_simulations() {
+        <span class="prelude-val">Ok</span>(number_of_simulations) =&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>simvec = Vec::new();
+            <span class="comment">// &quot;The range start..end contains all values with start &lt;= x &lt; end. It is empty if start &gt;= end.&quot;
+            // from https://doc.rust-lang.org/std/ops/struct.Range.html
+            </span><span class="kw">let </span>last_plus_one = number_of_simulations+<span class="number">1</span>;
+            <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..last_plus_one {
+                <span class="kw">match </span>db::read_simulation(n) {
+                    <span class="prelude-val">Ok</span>(sim) =&gt; {
+                        <span class="kw">let </span>sim_summary = SimulationSummary {
+                            simulation_id:     sim.simulation_id,
+                            model_id:          sim.model_id,
+                            simulation_type:   sim.simulation_type,
                         };
-                        <span class="ident">simvec</span>.<span class="ident">push</span>(<span class="ident">sim_summary</span>);
+                        simvec.push(sim_summary);
                     }
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>( <span class="ident">SimulationError</span> { <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not read simulation {} from redis DB: {}&quot;</span>, <span class="ident">n</span>, <span class="ident">e</span>), <span class="ident">http_status_code</span>: <span class="ident">Status::UnprocessableEntity</span>} )
+                    <span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>( SimulationError { err: <span class="macro">format!</span>(<span class="string">&quot;Could not read simulation {} from redis DB: {}&quot;</span>, n, e), http_status_code: Status::UnprocessableEntity} )
                 }
             }
-            <span class="kw">let</span> <span class="ident">simarray</span> <span class="op">=</span> <span class="ident">SimulationArray</span> {
-                <span class="ident">simulations</span>: <span class="ident">simvec</span>,
+            <span class="kw">let </span>simarray = SimulationArray {
+                simulations: simvec,
             };
-            <span class="prelude-val">Ok</span>(<span class="ident">Json</span>(<span class="ident">simarray</span>))
+            <span class="prelude-val">Ok</span>(Json(simarray))
         },
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>( <span class="ident">SimulationError</span> { <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not read number of simulations from redis DB: {}&quot;</span>, <span class="ident">e</span>), <span class="ident">http_status_code</span>: <span class="ident">Status::UnprocessableEntity</span>} )
+        <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>( SimulationError { err: <span class="macro">format!</span>(<span class="string">&quot;Could not read number of simulations from redis DB: {}&quot;</span>, e), http_status_code: Status::UnprocessableEntity} )
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Create a new simulation&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">openapi</span>]</span>
-<span class="attribute">#[<span class="ident">post</span>(<span class="string">&quot;/simulation&quot;</span>, <span class="ident">format</span> <span class="op">=</span> <span class="string">&quot;application/json&quot;</span>, <span class="ident">data</span> <span class="op">=</span> <span class="string">&quot;&lt;form&gt;&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">post_simulation</span>(<span class="ident">form</span>: <span class="ident">Json</span><span class="op">&lt;</span><span class="ident">SimulationForm</span> <span class="op">&gt;</span> ) -&gt; <span class="ident">SimulationResult</span> {
-    <span class="kw">match</span> <span class="ident">parse_simulation_form</span>(<span class="ident">form</span>).<span class="kw">await</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">simulation</span>) =&gt; {
-            <span class="kw">let</span> <span class="ident">model_id</span>         <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">simulation</span>.<span class="ident">model_id</span>;
-            <span class="kw">let</span> <span class="ident">load_profile_id</span>  <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">simulation</span>.<span class="ident">load_profile_id</span>;
-            <span class="kw">let</span> <span class="ident">model_url</span>        <span class="op">=</span> <span class="ident">file_service::convert_id_to_url</span>(<span class="ident">model_id</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">load_profile_url</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">none_string</span>: <span class="ident">String</span> <span class="op">=</span> <span class="string">&quot;None&quot;</span>.<span class="ident">into</span>();
-            <span class="macro">info!</span>(<span class="string">&quot;load_profile_id: {}&quot;</span>, <span class="ident">load_profile_id</span>);
-            <span class="kw">if</span> <span class="ident">simulation</span>.<span class="ident">load_profile_id</span> <span class="op">!</span><span class="op">=</span> <span class="ident">none_string</span> {
-                <span class="macro">info!</span>(<span class="string">&quot;Converting {} to url&quot;</span>, <span class="ident">simulation</span>.<span class="ident">load_profile_id</span>);
-                <span class="ident">load_profile_url</span> <span class="op">=</span> <span class="ident">file_service::convert_id_to_url</span>(<span class="ident">load_profile_id</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+<span class="attribute">#[doc = <span class="string">&quot;Create a new simulation&quot;</span>]
+#[openapi]
+#[post(<span class="string">&quot;/simulation&quot;</span>, format = <span class="string">&quot;application/json&quot;</span>, data = <span class="string">&quot;&lt;form&gt;&quot;</span>)]
+</span><span class="kw">pub async fn </span>post_simulation(form: Json&lt;SimulationForm &gt; ) -&gt; SimulationResult {
+    <span class="kw">match </span>parse_simulation_form(form).<span class="kw">await </span>{
+        <span class="prelude-val">Ok</span>(simulation) =&gt; {
+            <span class="kw">let </span>model_id         = <span class="kw-2">&amp;</span>simulation.model_id;
+            <span class="kw">let </span>load_profile_id  = <span class="kw-2">&amp;</span>simulation.load_profile_id;
+            <span class="kw">let </span>model_url        = file_service::convert_id_to_url(model_id).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>load_profile_url = <span class="string">&quot;&quot;</span>.into();
+            <span class="kw">let </span>none_string: String = <span class="string">&quot;None&quot;</span>.into();
+            <span class="macro">info!</span>(<span class="string">&quot;load_profile_id: {}&quot;</span>, load_profile_id);
+            <span class="kw">if </span>simulation.load_profile_id != none_string {
+                <span class="macro">info!</span>(<span class="string">&quot;Converting {} to url&quot;</span>, simulation.load_profile_id);
+                load_profile_url = file_service::convert_id_to_url(load_profile_id).<span class="kw">await</span><span class="question-mark">?</span>;
             }
-            <span class="kw">let</span> <span class="ident">amqp_sim</span>         <span class="op">=</span> <span class="ident">AMQPSimulation::from_simulation</span>(<span class="kw-2">&amp;</span><span class="ident">simulation</span>, <span class="ident">model_url</span>, <span class="ident">load_profile_url</span>);
-            <span class="kw">match</span> <span class="ident">block_on</span>(<span class="ident">amqp::request_simulation</span>(<span class="kw-2">&amp;</span><span class="ident">amqp_sim</span>)) {
-                <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">simulation</span>),
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">SimulationError</span> {
-                    <span class="ident">err</span>: <span class="macro">format!</span>(<span class="string">&quot;Could not publish to amqp server: {}&quot;</span>, <span class="ident">e</span>),
-                    <span class="ident">http_status_code</span>: <span class="ident">Status::BadGateway</span>
+            <span class="kw">let </span>amqp_sim         = AMQPSimulation::from_simulation(<span class="kw-2">&amp;</span>simulation, model_url, load_profile_url);
+            <span class="kw">match </span>block_on(amqp::request_simulation(<span class="kw-2">&amp;</span>amqp_sim)) {
+                <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(simulation),
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(SimulationError {
+                    err: <span class="macro">format!</span>(<span class="string">&quot;Could not publish to amqp server: {}&quot;</span>, e),
+                    http_status_code: Status::BadGateway
                 })
             }
         },
-        <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">e</span>)
+        <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e)
     }
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Create a link to the documentation page for the given function&quot;</span>]</span>
-<span class="kw">fn</span> <span class="ident">document_link</span>(<span class="ident">fn_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-    <span class="macro">format!</span>(<span class="string">&quot;https://sogno-platform.github.io/dpsim-api/dpsim_api/routes/fn.{}{}&quot;</span>, <span class="ident">fn_name</span>, <span class="string">&quot;.html&quot;</span>)
+<span class="attribute">#[doc = <span class="string">&quot;Create a link to the documentation page for the given function&quot;</span>]
+</span><span class="kw">fn </span>document_link(fn_name: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="macro">format!</span>(<span class="string">&quot;https://sogno-platform.github.io/dpsim-api/dpsim_api/routes/fn.{}{}&quot;</span>, fn_name, <span class="string">&quot;.html&quot;</span>)
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Handler for when an incomplete form has been submitted&quot;</span>]</span>
-<span class="attribute">#[<span class="ident">catch</span>(<span class="number">422</span>)]</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">incomplete_form</span>(<span class="ident">form</span>: <span class="kw-2">&amp;</span><span class="ident">rocket::Request</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">String</span> {
-    <span class="macro">info!</span>(<span class="string">&quot;FORM: {}&quot;</span>, <span class="ident">form</span>);
-    <span class="macro">format!</span>(<span class="string">&quot;Incomplete form.{}&quot;</span>, <span class="ident">form</span>)
+<span class="attribute">#[doc = <span class="string">&quot;Handler for when an incomplete form has been submitted&quot;</span>]
+#[catch(<span class="number">422</span>)]
+</span><span class="kw">pub async fn </span>incomplete_form(form: <span class="kw-2">&amp;</span>rocket::Request&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; String {
+    <span class="macro">info!</span>(<span class="string">&quot;FORM: {}&quot;</span>, form);
+    <span class="macro">format!</span>(<span class="string">&quot;Incomplete form.{}&quot;</span>, form)
 }
 
-<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">&quot;Returns the list of routes that we have defined&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_routes</span>() -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">rocket::Route</span><span class="op">&gt;</span>{
-    <span class="kw">return</span> <span class="macro">rocket_okapi::openapi_get_routes!</span>[ <span class="ident">get_root</span>, <span class="ident">get_api</span>, <span class="ident">get_simulations</span>, <span class="ident">post_simulation</span>, <span class="ident">get_simulation_id</span>]
+<span class="attribute">#[doc = <span class="string">&quot;Returns the list of routes that we have defined&quot;</span>]
+</span><span class="kw">pub fn </span>get_routes() -&gt; Vec&lt;rocket::Route&gt;{
+    <span class="kw">return </span><span class="macro">rocket_okapi::openapi_get_routes!</span>[ get_root, get_api, get_simulations, post_simulation, get_simulation_id]
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="dpsim_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0 (a55dd71d5 2022-09-19)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="dpsim_api" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0 (69f9c33d7 2022-12-12)" ></div></body></html>

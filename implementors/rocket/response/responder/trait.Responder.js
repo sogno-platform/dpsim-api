@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["dpsim_api"] = [{"text":"impl&lt;'r&gt; <a class=\"trait\" href=\"https://api.rocket.rs/v0.5-rc/rocket/response/responder/trait.Responder.html\" title=\"trait rocket::response::responder::Responder\">Responder</a>&lt;'r, 'static&gt; for <a class=\"struct\" href=\"dpsim_api/routes/struct.SimulationError.html\" title=\"struct dpsim_api::routes::SimulationError\">SimulationError</a>","synthetic":false,"types":["dpsim_api::routes::SimulationError"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"dpsim_api":[["impl&lt;'r&gt; <a class=\"trait\" href=\"https://api.rocket.rs/v0.5-rc/rocket/response/responder/trait.Responder.html\" title=\"trait rocket::response::responder::Responder\">Responder</a>&lt;'r, 'static&gt; for <a class=\"struct\" href=\"dpsim_api/routes/struct.SimulationError.html\" title=\"struct dpsim_api::routes::SimulationError\">SimulationError</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
