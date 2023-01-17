@@ -79,10 +79,10 @@ impl AMQPSimulation {
             simulation_id:    sim.simulation_id,
             simulation_type:  sim.simulation_type,
             results_file:     sim.results_id.clone(),
-            domain:          DomainType::SP,
-            solver:          SolverType::NRP,
-            timestep:        1,
-            finaltime:       360
+            domain:           sim.domain,
+            solver:           sim.solver,
+            timestep:         sim.timestep,
+            finaltime:        sim.finaltime
         }
     }
 }
